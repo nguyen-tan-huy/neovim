@@ -81,7 +81,11 @@ if not root_dir then
   return
 end
 
-local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
+-- Chỉ lấy tên thư mục cuối làm project_name thì 2 root_dir KHÁC NHAU nhưng trùng tên thư mục
+-- cuối (vd repo gốc "product-service" và module con cũng tên "product-service" có mvnw riêng)
+-- sẽ ra CÙNG 1 workspace_dir -> 2 tiến trình jdtls tranh nhau khoá workspace Eclipse -> tiến
+-- trình sau bị kill ngay (exit code 13). Thêm hash của root_dir đầy đủ để đảm bảo không đụng.
+local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t") .. "-" .. vim.fn.sha256(root_dir):sub(1, 8)
 local workspace_dir = vim.fn.stdpath("cache") .. "/jdtls-workspace/" .. project_name
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()

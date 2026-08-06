@@ -41,7 +41,25 @@ return {
   },
   {
     "nvim-lualine/lualine.nvim",
-    config = function() require("lualine").setup({}) end,
+    config = function()
+      -- Hiện đang có bao nhiêu debug session chạy + tên, để biết ngay tắt xong thật chưa
+      -- thay vì phải đoán (bấm <leader>dX xong không thấy gì báo là còn chạy hay đã tắt).
+      local function dap_status()
+        local ok, dap = pcall(require, "dap")
+        if not ok then return "" end
+        local sessions = dap.sessions()
+        local names = {}
+        for _, s in pairs(sessions) do table.insert(names, s.config.name:match("^[^:]+") or s.config.name) end
+        if #names == 0 then return "" end
+        return "🐛 " .. table.concat(names, ", ")
+      end
+
+      require("lualine").setup({
+        sections = {
+          lualine_x = { dap_status, "encoding", "fileformat", "filetype" },
+        },
+      })
+    end,
   },
   {
     "akinsho/bufferline.nvim",

@@ -43,11 +43,15 @@ return {
     -- session đang được focus (đổi focus bằng <leader>ds thì nổi cũng tự đổi log theo).
     local term_bufs = {} -- config.name -> bufnr, mỗi profile debug 1 buffer console riêng
     local float_win = nil -- winid đang mở (nil nếu đang ẩn)
+    local last_session_name = nil -- tên session GẦN NHẤT (kể cả đã tắt), để <leader>dt vẫn
+    -- xem được log lúc chương trình chạy xong/crash quá nhanh, session đã biến mất khỏi
+    -- dap.sessions() trước khi kịp bấm xem console.
 
     dap.defaults.fallback.terminal_win_cmd = function(config)
       local buf = vim.api.nvim_create_buf(false, true)
       vim.bo[buf].bufhidden = "hide"
       term_bufs[config.name] = buf
+      last_session_name = config.name
       return buf
     end
 
@@ -58,17 +62,18 @@ return {
       float_win = nil
     end
 
-    --- Mở/refresh cửa sổ nổi hiện đúng log của session đang focus.
+    --- Mở/refresh cửa sổ nổi hiện log của session đang focus; nếu không còn session nào đang
+    --- chạy (đã tắt/crash) thì fallback về log của session GẦN NHẤT, để không bị mất log.
     local function show_float_for_focused_session()
       local session = dap.session()
-      if not session then
-        vim.notify("Không có debug session nào đang chạy.", vim.log.levels.WARN)
+      local name = session and session.config.name or last_session_name
+      if not name then
+        vim.notify("Chưa chạy debug session nào.", vim.log.levels.WARN)
         return
       end
-      local buf = term_bufs[session.config.name]
+      local buf = term_bufs[name]
       if not buf or not vim.api.nvim_buf_is_valid(buf) then
-        vim.notify("Session '" .. session.config.name .. "' chưa có console (chưa launch xong?).",
-          vim.log.levels.WARN)
+        vim.notify("Session '" .. name .. "' chưa có console (chưa launch xong?).", vim.log.levels.WARN)
         return
       end
       close_float()
@@ -81,7 +86,7 @@ return {
         row = math.floor((vim.o.lines - height) / 2),
         col = math.floor((vim.o.columns - width) / 2),
         border = "rounded",
-        title = " Console: " .. session.config.name .. " ",
+        title = " Console: " .. name .. (session and "" or " (đã tắt)") .. " ",
         title_pos = "center",
       })
       vim.wo[float_win].number = false
@@ -110,6 +115,23 @@ return {
     dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
     dap.listeners.before.event_terminated["dapui_config"] = close_dapui_if_no_sessions
     dap.listeners.before.event_exited["dapui_config"] = close_dapui_if_no_sessions
+
+    -- Báo rõ ràng lúc session THỰC SỰ tắt xong (không phải lúc bấm <leader>dx/dX - đó chỉ là
+    -- gửi lệnh terminate, còn tắt xong hẳn hay chưa phải đợi debug adapter phản hồi) + refresh
+    -- ngay statusline (mục 🐛 ở lualine) thay vì đợi lualine tự làm mới theo chu kỳ.
+    local function on_session_ended(session)
+      vim.schedule(function()
+        vim.cmd("redrawstatus")
+        if session and session.config then
+          vim.notify("Đã tắt session debug: " .. session.config.name, vim.log.levels.INFO)
+        end
+      end)
+    end
+    dap.listeners.after.event_terminated["status_notify"] = on_session_ended
+    dap.listeners.after.event_exited["status_notify"] = on_session_ended
+    dap.listeners.after.event_initialized["status_notify"] = function()
+      vim.schedule(function() vim.cmd("redrawstatus") end)
+    end
 
     -- Scheme phím debug giống IntelliJ
     vim.keymap.set("n", "<F8>", function() dap.step_over() end, { desc = "Step over" })
