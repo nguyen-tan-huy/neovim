@@ -1,0 +1,1752 @@
+!SESSION 2026-07-22 22:32:06.850 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.11
+java.vendor=Arch Linux
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/huyhappy/.config/nvim/.nvim_jdtls
+
+!ENTRY com.microsoft.java.test.plugin 4 0 2026-07-22 22:32:08.279
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: com.microsoft.java.test.plugin [109]
+  Unresolved requirement: Require-Bundle: org.objectweb.asm; bundle-version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2041)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:08.679
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.jacoco.core 4 0 2026-07-22 22:32:08.693
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.jacoco.core [134]
+  Unresolved requirement: Import-Package: org.objectweb.asm; version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2043)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:08.713
+!MESSAGE Started org.eclipse.buildship.core 23ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:08.713
+!MESSAGE Started org.eclipse.m2e.core 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:08.799
+!MESSAGE Main thread is waiting
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:08.819
+!MESSAGE >> initialize
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:08.822
+!MESSAGE Initializing JDT Language Server (Standard)
+	- Version: 1.60.0-SNAPSHOT (OSGi 1.60.0.202606262232)
+	- Git Commit: 57ed41b - Update CHANGELOG.md for 1.60.0. (#3827)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.204
+!MESSAGE ProjectRegistryRefreshJob finished 490ms
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:09.231
+!MESSAGE Failed to load extension bundles 
+!STACK 1
+org.eclipse.core.runtime.CoreException: Load bundle list
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:175)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Contains: Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar
+Contains: Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/jacocoagent.jar
+!SUBENTRY 1 org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:09.231
+!MESSAGE Load bundle list
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:09.231
+!MESSAGE Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:09.231
+!MESSAGE Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/jacocoagent.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.236
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.237
+!MESSAGE Non-Static Commands: [java.project.import, java.project.changeImportedProjects, java.navigate.openTypeHierarchy, java.project.resolveStackTraceLocation, java.edit.handlePasteEvent, java.edit.stringFormatting, java.project.getSettings, java.project.resolveWorkspaceSymbol, java.project.upgradeGradle, java.project.createModuleInfo, java.vm.getAllInstalls, java.edit.organizeImports, java.project.refreshDiagnostics, java.getFullyQualifiedName, java.project.removeFromSourcePath, java.project.listSourcePaths, java.project.updateSettings, java.project.getAll, java.reloadBundles, java.project.isTestFile, java.project.resolveText, java.project.getClasspaths, java.navigate.resolveTypeHierarchy, java.getTroubleshootingInfo, java.edit.smartSemicolonDetection, java.project.updateSourceAttachment, java.project.updateClassPaths, java.decompile, java.protobuf.generateSources, java.project.resolveSourceAttachment, java.project.updateJdk, java.project.addToSourcePath, java.completion.onDidSelect]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.237
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.237
+!MESSAGE Non-Static Commands: [vscode.java.checkProjectSettings, vscode.java.isOnClasspath, vscode.java.fetchUsageData, vscode.java.validateLaunchConfig, vscode.java.resolveInlineVariables, vscode.java.resolveClassFilters, vscode.java.resolveMainMethod, vscode.java.resolveClasspath, vscode.java.resolveBuildFiles, vscode.java.resolveMainClass, vscode.java.updateDebugSettings, vscode.java.resolveSourceUri, vscode.java.fetchPlatformSettings, vscode.java.buildWorkspace, vscode.java.startDebugSession, vscode.java.inferLaunchCommandLength, vscode.java.resolveElementAtSelection, vscode.java.resolveJavaExecutable]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.250
+!MESSAGE >> initialized
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.269
+!MESSAGE RepositoryRegistryUpdateJob finished 20ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.280
+!MESSAGE Importers: GradleProjectImporter, MavenProjectImporter, EclipseProjectImporter, InvisibleProjectImporter
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:09.286
+!MESSAGE Importing Maven project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.217
+!MESSAGE Progressive import: reporting 1 new project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.221
+!MESSAGE Workspace initialized in 1973ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.228
+!MESSAGE >> initialization job finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.236
+!MESSAGE Setting /usr/lib/jvm/java-21-openjdk as 'JavaSE-21' environment (id:1784734329294)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.240
+!MESSAGE JVM Runtimes changed, saving new configuration
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:11.366
+!MESSAGE Command _java.reloadBundles.command not supported on client
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.420
+!MESSAGE >> build jobs finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.421
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:11.815
+!MESSAGE Reconciled 1. Took 0 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:12.912
+!MESSAGE begin problem for /ProductServiceApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:12.915
+!MESSAGE 0 problems reported for /ProductServiceApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:12.926
+!MESSAGE Validated 1. Took 510 ms
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:13.428
+!MESSAGE Error occured while building workspace. Details: 
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/annotations/validator/impls/ValuesAllowedValidator.java; line: 31
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/CacheTimingAspect.java; line: 35
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 112
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 118
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 124
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 130
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 136
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 142
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 148
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 154
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 160
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 166
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 172
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 178
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 184
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 190
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 196
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 202
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 208
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 214
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 220
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 226
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 232
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/configs/ProjectConfig.java; line: 239
+ message: The blank final field cacheManager may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/CacheDataFetcher.java; line: 18
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/GroupDataFetcher.java; line: 108
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/GroupDataFetcher.java; line: 126
+ message: The blank final field objectMapper may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/MarketPlaceDataFetcher.java; line: 45
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/MarketPlaceDataFetcher.java; line: 218
+ message: The blank final field productMarketPlaceController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/MarketPlaceDataFetcher.java; line: 42
+ message: The blank final field productPreBuildController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/MarketPlaceDataFetcher.java; line: 43
+ message: The blank final field productConfigController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/MarketPlaceDataFetcher.java; line: 44
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 896
+ message: The blank final field productController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 42
+ message: The blank final field productPreBuildController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 43
+ message: The blank final field productConfigController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 44
+ message: The blank final field objectMapper may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 45
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 131
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 246
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 248
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 257
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 260
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 266
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 269
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 275
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 278
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 294
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 302
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 314
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 317
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 317
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 322
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 336
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 339
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 438
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 441
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 444
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 447
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 456
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 468
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 471
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 471
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 474
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 485
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 532
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 532
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 543
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductDataFetcher.java; line: 543
+ message: The blank final field productPriceController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductPriceDataFetcher.java; line: 27
+ message: The blank final field productStoreController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductStoreDataFetcher.java; line: 21
+ message: The blank final field productReviewController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductStoreDataFetcher.java; line: 22
+ message: The blank final field productTagController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductTagDataFetcher.java; line: 33
+ message: The blank final field tagProductController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/ProductTagDataFetcher.java; line: 34
+ message: The blank final field unitController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/graphql/UnitDataFetcher.java; line: 28
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/handler/ErrorHandle.java; line: 58
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/handler/ErrorHandle.java; line: 59
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/handler/ErrorHandle.java; line: 61
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/handler/ErrorHandle.java; line: 66
+ message: The method isNullOrEmpty() is undefined for the type List<ProductOutputDTO>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 499
+ message: The method isNullOrEmpty() is undefined for the type List<ProductVariantDTO>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 504
+ message: The method isNullOrEmpty() is undefined for the type List<ProductOutputDTO>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 151
+ message: The method isNullOrEmpty() is undefined for the type Collection<CategoryDTO>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 158
+ message: The method isNullOrEmpty() is undefined for the type List<ProductVariantDTO>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 159
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 165
+ message: The method isNullOrEmpty() is undefined for the type List<Product>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 270
+ message: The method isNullOrEmpty() is undefined for the type List<Product>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 276
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 304
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 304
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 307
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 307
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/InitAPI.java; line: 486
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 341
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 355
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 358
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 882
+ message: The method isNullOrEmpty() is undefined for the type List<String>; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 886
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 908
+ message: The blank final field productController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 51
+ message: The blank final field productPreBuildController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 52
+ message: The blank final field productPriceController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 53
+ message: The blank final field productFavoriteController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 54
+ message: The blank final field productReviewController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 55
+ message: The blank final field productUploadEcoSaveController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 56
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 270
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 272
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 281
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 284
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 290
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 293
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 299
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 302
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 316
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 333
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 336
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductAPI.java; line: 336
+ message: The blank final field productPriceController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductPriceAPI.java; line: 25
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductRelationshipApi.java; line: 60
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductRelationshipApi.java; line: 52
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ProductRelationshipApi.java; line: 56
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/rest/ShoppingCartAPI.java; line: 116
+ message: The method isBlankOrNull() is undefined for the type String; code: 67108964; resource: /home/huyhappy/Git-projects/product-service/product-service/src/main/java/net/lvs/productservice/security/TokenAuthenticationProvider.java; line: 34
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:14.196
+!MESSAGE Updated product-service in 2770 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:14.961
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:22.586
+!MESSAGE >> shutdown
+!SESSION 2026-07-22 22:32:29.507 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.11
+java.vendor=Arch Linux
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/huyhappy/.config/nvim/.nvim_jdtls
+
+!ENTRY com.microsoft.java.test.plugin 4 0 2026-07-22 22:32:30.956
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: com.microsoft.java.test.plugin [109]
+  Unresolved requirement: Require-Bundle: org.objectweb.asm; bundle-version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2041)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.425
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.jacoco.core 4 0 2026-07-22 22:32:31.440
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.jacoco.core [134]
+  Unresolved requirement: Import-Package: org.objectweb.asm; version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2043)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.458
+!MESSAGE Started org.eclipse.buildship.core 23ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.459
+!MESSAGE Started org.eclipse.m2e.core 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.460
+!MESSAGE ProjectRegistryRefreshJob finished 1ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.525
+!MESSAGE Main thread is waiting
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.541
+!MESSAGE >> initialize
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.544
+!MESSAGE Initializing JDT Language Server (Standard)
+	- Version: 1.60.0-SNAPSHOT (OSGi 1.60.0.202606262232)
+	- Git Commit: 57ed41b - Update CHANGELOG.md for 1.60.0. (#3827)
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:31.734
+!MESSAGE Failed to load extension bundles 
+!STACK 1
+org.eclipse.core.runtime.CoreException: Load bundle list
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:175)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Contains: Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar
+Contains: Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/jacocoagent.jar
+!SUBENTRY 1 org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:31.735
+!MESSAGE Load bundle list
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:31.735
+!MESSAGE Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:31.735
+!MESSAGE Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/jacocoagent.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.742
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.743
+!MESSAGE Non-Static Commands: [java.project.import, java.project.changeImportedProjects, java.navigate.openTypeHierarchy, java.project.resolveStackTraceLocation, java.edit.handlePasteEvent, java.edit.stringFormatting, java.project.getSettings, java.project.resolveWorkspaceSymbol, java.project.upgradeGradle, java.project.createModuleInfo, java.vm.getAllInstalls, java.edit.organizeImports, java.project.refreshDiagnostics, java.getFullyQualifiedName, java.project.removeFromSourcePath, java.project.listSourcePaths, java.project.updateSettings, java.project.getAll, java.reloadBundles, java.project.isTestFile, java.project.resolveText, java.project.getClasspaths, java.navigate.resolveTypeHierarchy, java.getTroubleshootingInfo, java.edit.smartSemicolonDetection, java.project.updateSourceAttachment, java.project.updateClassPaths, java.decompile, java.protobuf.generateSources, java.project.resolveSourceAttachment, java.project.updateJdk, java.project.addToSourcePath, java.completion.onDidSelect]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.743
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.744
+!MESSAGE Non-Static Commands: [vscode.java.checkProjectSettings, vscode.java.isOnClasspath, vscode.java.fetchUsageData, vscode.java.validateLaunchConfig, vscode.java.resolveInlineVariables, vscode.java.resolveClassFilters, vscode.java.resolveMainMethod, vscode.java.resolveClasspath, vscode.java.resolveBuildFiles, vscode.java.resolveMainClass, vscode.java.updateDebugSettings, vscode.java.resolveSourceUri, vscode.java.fetchPlatformSettings, vscode.java.buildWorkspace, vscode.java.startDebugSession, vscode.java.inferLaunchCommandLength, vscode.java.resolveElementAtSelection, vscode.java.resolveJavaExecutable]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:31.760
+!MESSAGE >> initialized
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.226
+!MESSAGE RepositoryRegistryUpdateJob finished 468ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.238
+!MESSAGE Importers: GradleProjectImporter, MavenProjectImporter, EclipseProjectImporter, InvisibleProjectImporter
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.242
+!MESSAGE Importing Maven project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.308
+!MESSAGE Progressive import: reporting 1 new project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.313
+!MESSAGE Workspace initialized in 556ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.318
+!MESSAGE >> initialization job finished
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-07-22 22:32:32.664
+!MESSAGE Command _java.reloadBundles.command not supported on client
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.676
+!MESSAGE >> build jobs finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:32.677
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:33.113
+!MESSAGE Reconciled 1. Took 1 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:33.809
+!MESSAGE begin problem for /ProductServiceApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:33.810
+!MESSAGE 0 problems reported for /ProductServiceApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:33.811
+!MESSAGE Validated 1. Took 96 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:39.565
+!MESSAGE >> shutdown
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:39.575
+!MESSAGE >> exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:39.614
+!MESSAGE Shutdown received... waking up main thread
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:39.619
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:58.714
+!MESSAGE Parent process stopped running, forcing server exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:58.715
+!MESSAGE >> exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:58.716
+!MESSAGE Shutdown received... waking up main thread
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-07-22 22:32:58.720
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:
+!SESSION 2026-08-02 00:53:27.329 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.11
+java.vendor=Arch Linux
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/huyhappy/.config/nvim/.nvim_jdtls
+
+!ENTRY com.microsoft.java.test.plugin 4 0 2026-08-02 00:53:27.810
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: com.microsoft.java.test.plugin [109]
+  Unresolved requirement: Require-Bundle: org.eclipse.jdt.junit4.runtime
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2041)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.320
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.354
+!MESSAGE Started org.eclipse.buildship.core 24ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.354
+!MESSAGE Started org.eclipse.m2e.core 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.355
+!MESSAGE ProjectRegistryRefreshJob finished 1ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.456
+!MESSAGE Main thread is waiting
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.470
+!MESSAGE >> initialize
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.472
+!MESSAGE Initializing JDT Language Server (Standard)
+	- Version: 1.60.0-SNAPSHOT (OSGi 1.60.0.202606262232)
+	- Git Commit: 57ed41b - Update CHANGELOG.md for 1.60.0. (#3827)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.557
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.558
+!MESSAGE Non-Static Commands: [java.project.import, java.project.changeImportedProjects, java.navigate.openTypeHierarchy, java.project.resolveStackTraceLocation, java.edit.handlePasteEvent, java.edit.stringFormatting, java.project.getSettings, java.project.resolveWorkspaceSymbol, java.project.upgradeGradle, java.project.createModuleInfo, java.vm.getAllInstalls, java.edit.organizeImports, java.project.refreshDiagnostics, java.getFullyQualifiedName, java.project.removeFromSourcePath, java.project.listSourcePaths, java.project.updateSettings, java.project.getAll, java.reloadBundles, java.project.isTestFile, java.project.resolveText, java.project.getClasspaths, java.navigate.resolveTypeHierarchy, java.getTroubleshootingInfo, java.edit.smartSemicolonDetection, java.project.updateSourceAttachment, java.project.updateClassPaths, java.decompile, java.protobuf.generateSources, java.project.resolveSourceAttachment, java.project.updateJdk, java.project.addToSourcePath, java.completion.onDidSelect]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.558
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.559
+!MESSAGE Non-Static Commands: [vscode.java.checkProjectSettings, vscode.java.isOnClasspath, vscode.java.fetchUsageData, vscode.java.validateLaunchConfig, vscode.java.resolveInlineVariables, vscode.java.resolveClassFilters, vscode.java.resolveMainMethod, vscode.java.resolveClasspath, vscode.java.resolveBuildFiles, vscode.java.resolveMainClass, vscode.java.updateDebugSettings, vscode.java.resolveSourceUri, vscode.java.fetchPlatformSettings, vscode.java.buildWorkspace, vscode.java.startDebugSession, vscode.java.inferLaunchCommandLength, vscode.java.resolveElementAtSelection, vscode.java.resolveJavaExecutable]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:28.571
+!MESSAGE >> initialized
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:32.913
+!MESSAGE RepositoryRegistryUpdateJob finished 1ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:33.291
+!MESSAGE Importers: GradleProjectImporter, MavenProjectImporter, EclipseProjectImporter, InvisibleProjectImporter
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:33.298
+!MESSAGE Importing Maven project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:34.490
+!MESSAGE Progressive import: reporting 1 new project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:34.493
+!MESSAGE Workspace initialized in 1581ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:34.498
+!MESSAGE >> initialization job finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:34.508
+!MESSAGE Setting /usr/lib/jvm/java-11-openjdk as 'JavaSE-11' environment (id:/usr/lib/jvm/java-11-openjdk)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:34.515
+!MESSAGE JVM Runtimes changed, saving new configuration
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:35.043
+!MESSAGE Reconciled 1. Took 0 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:36.125
+!MESSAGE begin problem for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:36.128
+!MESSAGE 0 problems reported for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:36.132
+!MESSAGE Validated 1. Took 459 ms
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:53:36.789
+!MESSAGE Error occured while building workspace. Details: 
+ message: The method getSubnetIPS() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 413
+ message: The method getSubnetIPS() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 413
+ message: The method getSubnetIPS() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 414
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 426
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 427
+ message: The method getReservation() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 430
+ message: The method getReservation() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 431
+ message: The method getRateLimit() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 435
+ message: The method getRateLimit() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/CMBaseBean.java; line: 436
+ message: The method setIpAddresses(null) is undefined for the type TemplateComputingBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/ComputingNetworkBean.java; line: 754
+ message: The method setComputingSelect(Computing) is undefined for the type BackupPointListBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/JobBackupDetailBean.java; line: 481
+ message: The method setBackupPointFilter(BackupPointFilter) is undefined for the type BackupPointListBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/JobBackupDetailBean.java; line: 486
+ message: The method setJobBackupItemFilter(JobBackupItemFilter) is undefined for the type JobBackupItemLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/JobBackupDetailBean.java; line: 213
+ message: The method getBackupPointFilter() is undefined for the type BackupPointListBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/JobBackupDetailBean.java; line: 298
+ message: The method setBackupPointFilter(BackupPointFilter) is undefined for the type BackupPointListBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/JobBackupDetailBean.java; line: 300
+ message: The method getBackupPointFilter() is undefined for the type BackupPointListBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/JobBackupDetailBean.java; line: 477
+ message: '<>' cannot be used with anonymous classes; code: 16778096; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/ServiceStatusFFMComponentBean.java; line: 38
+ message: The method setSubnetFilter(SubnetFilter) is undefined for the type SubnetLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/SubnetBean.java; line: 34
+ message: The method getIpAddressManager() is undefined for the type TemplateComputingBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/TemplateComputingBean.java; line: 1571
+ message: The method getIpAddressController() is undefined for the type TemplateComputingBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/TemplateComputingBean.java; line: 1577
+ message: The method getIpAddressManager() is undefined for the type TemplateComputingBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/TemplateComputingBean.java; line: 1590
+ message: The method getDefaultParam() is undefined for the type TemplateComputingBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/TemplateComputingBean.java; line: 2873
+ message: The method setBackupPointFilter(BackupPointFilter) is undefined for the type BackupPointLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/component/BackupPointListBean.java; line: 126
+ message: The method setJobBackupFilter(JobBackupFilter) is undefined for the type JobBackupLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/component/JobBackupListBean.java; line: 135
+ message: log cannot be resolved; code: 570425394; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/component/MonitorDeployPoolBean.java; line: 57
+ message: The method setComputingFilter(ComputingFilter) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingBean.java; line: 145
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1723
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2018
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2019
+ message: The method setVlan(Network) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2025
+ message: The method setSubnetId(String) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2026
+ message: The method setSubnetName(String) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2027
+ message: The method setSubnetIPS(List<SubnetIP>) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2030
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 2369
+ message: The method builder() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 243
+ message: The method setBandwidth(double) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 663
+ message: The method builder() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 863
+ message: The method setReservation(null) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 954
+ message: The method setRateLimit(null) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 955
+ message: The method setBandwidthReservationRatio(null) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 956
+ message: The method setBandwidth(int) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1081
+ message: The method setReservation(Integer) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1082
+ message: The method setRateLimit(Double) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1083
+ message: The method setBandwidthReservationRatio(Integer) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1084
+ message: The method getIndexInterface() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1391
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1392
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1393
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1394
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1395
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1396
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1397
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1399
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1400
+ message: The method getReservation() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1401
+ message: The method getRateLimit() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1402
+ message: The method getBandwidthReservationRatio() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1403
+ message: The method getSubnetIPS() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1413
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1420
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1421
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1428
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1429
+ message: The method getIndexInterface() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1565
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1566
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1567
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1568
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1569
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1570
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1571
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1573
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1574
+ message: The method getReservation() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1575
+ message: The method getRateLimit() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1576
+ message: The method getBandwidthReservationRatio() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1577
+ message: The method getIpSelect() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1585
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1588
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1589
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1596
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1597
+ message: The method getIndexInterface() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1699
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1700
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1701
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1702
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1703
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1704
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1705
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1707
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1708
+ message: The method getSubnetIPS() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1710
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1714
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1715
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBean.java; line: 1722
+ message: The method builder() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 377
+ message: The method setBandwidth(double) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1396
+ message: The method setReservation(Integer) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1397
+ message: The method setRateLimit(Double) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1398
+ message: The method setBandwidthReservationRatio(Integer) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1399
+ message: The method getIndexInterface() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1730
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1731
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1732
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1733
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1734
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1735
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1736
+ message: The method getBandwidth() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1738
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1739
+ message: The method getReservation() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1740
+ message: The method getRateLimit() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1741
+ message: The method getBandwidthReservationRatio() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1742
+ message: The method getSubnetIPS() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1752
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1756
+ message: The method getVlan() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1757
+ message: The method getSubnetId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1764
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 1765
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 2112
+ message: The method getVlanId() is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 2113
+ message: The method setVlan(Network) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 2119
+ message: The method setSubnetId(String) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 2120
+ message: The method setSubnetName(String) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 2121
+ message: The method setSubnetIPS(List<SubnetIP>) is undefined for the type InterfaceInfo; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingCreateBeanV2.java; line: 2124
+ message: The method setActionTreeNode(null) is undefined for the type TemplateComputingBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingDetailBean.java; line: 520
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListComponent.java; line: 102
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListComponent.java; line: 106
+ message: The method getFilter() is undefined for the type ComputingListComponent; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListComponent.java; line: 172
+ message: The method setComputingFilter(ComputingFilter) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListComponent.java; line: 209
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListComponent.java; line: 210
+ message: The method getLabel() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 710
+ message: The method getFieldType() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 713
+ message: TEXT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 714
+ message: SELECT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 715
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 716
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 717
+ message: MULTI_SELECT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 720
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 721
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 721
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 722
+ message: DATE cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 727
+ message: The method getDateValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 728
+ message: The method getDateValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 729
+ message: The method getOptions() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 743
+ message: The method getOptions() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 747
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 122
+ message: The method setFieldKey(String) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 136
+ message: The method setFieldType(FilterFieldType) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 137
+ message: The method setValue(String) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 138
+ message: The method setOptions(List<FilterOption>) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 139
+ message: The method setFieldKey(String) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 150
+ message: The method setFieldType(FilterFieldType) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 151
+ message: The method setValue(String) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 152
+ message: The method setOptions(List<FilterOption>) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 153
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 240
+ message: The method getFieldType() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 242
+ message: TEXT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 243
+ message: SELECT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 244
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 245
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 246
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 246
+ message: OTHER cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 259
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 260
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 264
+ message: The method setComputingFilter(ComputingFilter) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 291
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 292
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 321
+ message: The method getKey() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 324
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 324
+ message: The method getFieldType() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 330
+ message: The method getOptions() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 331
+ message: The method setValue(null) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 332
+ message: The method setValues(null) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 333
+ message: The method setDateValue(null) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 334
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 339
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 339
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 340
+ message: The method setComputingFilter(ComputingFilter) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 492
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 493
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 574
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 575
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 575
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 584
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 585
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 585
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption, FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 589
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 590
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 591
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 592
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 593
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption, FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 595
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 596
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 597
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 598
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 599
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 609
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 617
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 637
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 645
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 653
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 671
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 672
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 677
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 679
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 682
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 696
+ message: The method getKey() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 701
+ message: The method getKey() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 702
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingListDynamicComponent.java; line: 702
+ message: The method getComputings() is undefined for the type ComputingRevokeBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/ComputingRevokeBean.java; line: 46
+ message: The method setFromDate(null) is undefined for the type DashboardBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/DashboardBean.java; line: 395
+ message: The method setToDate(null) is undefined for the type DashboardBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/DashboardBean.java; line: 400
+ message: The method getProductId() is undefined for the type QuickLabBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/QuickLabBean.java; line: 742
+ message: The method getProductId() is undefined for the type QuickLabBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/QuickLabBean.java; line: 957
+ message: The method getProductId() is undefined for the type QuickLabBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computing/QuickLabBean.java; line: 735
+ message: The method getComputingPoolDetail(String) in the type ComputingPoolBean is not applicable for the arguments (); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/computingPool/ComputingPoolBean.java; line: 123
+ message: The method getDefaultURL() is undefined for the type NetworkSubnetDetailBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/network/NetworkSubnetDetailBean.java; line: 110
+ message: The method getDefaultURL() is undefined for the type NetworkProfileDetailBean; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/network/networkProfile/NetworkProfileDetailBean.java; line: 73
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 99
+ message: The method setPostLoadCallback(this::refreshCloneCountForCurrentPage) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 100
+ message: The method setFieldKey(String) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 110
+ message: The method setFieldType(FilterFieldType) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 111
+ message: The method setValue(String) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 112
+ message: The method setOptions(List<FilterOption>) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 113
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 167
+ message: The method getFieldType() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 168
+ message: TEXT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 169
+ message: SELECT cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 170
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 171
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 172
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 172
+ message: OTHER cannot be resolved to a variable; code: 33554515; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 175
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 176
+ message: The method setComputingFilter(ComputingFilter) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 197
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 198
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 214
+ message: The method setComputingFilter(ComputingFilter) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 238
+ message: The method setReturnEmpty(boolean) is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 239
+ message: The method getComputings() is undefined for the type ComputingLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 252
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 314
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 315
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 315
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 319
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 320
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 320
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 333
+ message: The method asList(T...) in the type Arrays is not applicable for the arguments (FilterOption, FilterOption); code: 67108979; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 338
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 339
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 340
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 348
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 356
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 370
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 445
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 446
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 450
+ message: The method getKey() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 454
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 454
+ message: The method getFieldType() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 460
+ message: The method getFieldType() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 460
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 461
+ message: The method getValue() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 462
+ message: The method getLabel() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 467
+ message: The method getOptions() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 471
+ message: The method getOptions() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 472
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 479
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 479
+ message: The method getValues() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 480
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 484
+ message: The method getKey() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 486
+ message: The method getFieldKey() is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 486
+ message: The method getFieldType() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 487
+ message: The method getOptions() is undefined for the type FilterField; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 488
+ message: The method setValue(null) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 489
+ message: The method setValues(null) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 490
+ message: The method setDateValue(null) is undefined for the type DynamicFilter; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 491
+ message: The constructor FilterOption(String, String) is undefined; code: 134217858; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/shadow/ShadowListDynamicComponent.java; line: 504
+ message: The method setProductOutputDTO(ProductOutputDTO) is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 164
+ message: The method setTemplateId(String) is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 166
+ message: The method setTemplateName(String) is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 167
+ message: The method getTemplateId() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 190
+ message: The method getTemplateId() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 191
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 193
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 199
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 204
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 205
+ message: The method getTemplateId() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 206
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 210
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 265
+ message: The method getProductOutputDTO() is undefined for the type ProductOfTemplate; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/bean/template/TemplateBean.java; line: 266
+ message: The blank final field serviceController may not have been initialized; code: 33554513; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/converter/ServiceConverter.java; line: 24
+ message: The method getComputingPoolFiller() is undefined for the type ComputingPoolLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/model/ComputingPoolLazyModel.java; line: 60
+ message: The method getComputingPoolFiller() is undefined for the type ComputingPoolLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/model/ComputingPoolLazyModel.java; line: 79
+ message: The method getComputingPoolFiller() is undefined for the type ComputingPoolLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/model/ComputingPoolLazyModel.java; line: 80
+ message: The method getComputingPoolFiller() is undefined for the type ComputingPoolLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/model/ComputingPoolLazyModel.java; line: 81
+ message: The method getComputingPoolFiller() is undefined for the type ComputingPoolLazyModel; code: 67108964; resource: /home/huyhappy/Git-projects/computing-management/computing-manager/src/main/java/vn/longvan/computing/computingmanager/model/ComputingPoolLazyModel.java; line: 83
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:53:48.466
+!MESSAGE Command _java.reloadBundles.command not supported on client
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:48.468
+!MESSAGE >> build jobs finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:48.468
+!MESSAGE >> registerWatchers'
+
+!ENTRY java-debug 1 0 2026-08-02 00:53:48.468
+!MESSAGE Starting com.microsoft.java.debug.plugin
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:49.388
+!MESSAGE Updated computing-manager in 919 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:50.278
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:57.227
+!MESSAGE >> shutdown
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:57.277
+!MESSAGE >> exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:57.351
+!MESSAGE Shutdown received... waking up main thread
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:53:57.357
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:
+!SESSION 2026-08-02 00:56:27.139 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.11
+java.vendor=Arch Linux
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/huyhappy/.config/nvim/.nvim_jdtls
+
+!ENTRY com.microsoft.java.test.plugin 4 0 2026-08-02 00:56:27.607
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: com.microsoft.java.test.plugin [109]
+  Unresolved requirement: Require-Bundle: org.eclipse.jdt.junit4.runtime
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2041)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.127
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.164
+!MESSAGE Started org.eclipse.buildship.core 26ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.164
+!MESSAGE Started org.eclipse.m2e.core 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.166
+!MESSAGE ProjectRegistryRefreshJob finished 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.235
+!MESSAGE Main thread is waiting
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.266
+!MESSAGE >> initialize
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.268
+!MESSAGE Initializing JDT Language Server (Standard)
+	- Version: 1.60.0-SNAPSHOT (OSGi 1.60.0.202606262232)
+	- Git Commit: 57ed41b - Update CHANGELOG.md for 1.60.0. (#3827)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.356
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.357
+!MESSAGE Non-Static Commands: [java.project.import, java.project.changeImportedProjects, java.navigate.openTypeHierarchy, java.project.resolveStackTraceLocation, java.edit.handlePasteEvent, java.edit.stringFormatting, java.project.getSettings, java.project.resolveWorkspaceSymbol, java.project.upgradeGradle, java.project.createModuleInfo, java.vm.getAllInstalls, java.edit.organizeImports, java.project.refreshDiagnostics, java.getFullyQualifiedName, java.project.removeFromSourcePath, java.project.listSourcePaths, java.project.updateSettings, java.project.getAll, java.reloadBundles, java.project.isTestFile, java.project.resolveText, java.project.getClasspaths, java.navigate.resolveTypeHierarchy, java.getTroubleshootingInfo, java.edit.smartSemicolonDetection, java.project.updateSourceAttachment, java.project.updateClassPaths, java.decompile, java.protobuf.generateSources, java.project.resolveSourceAttachment, java.project.updateJdk, java.project.addToSourcePath, java.completion.onDidSelect]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.360
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.361
+!MESSAGE Non-Static Commands: [vscode.java.checkProjectSettings, vscode.java.isOnClasspath, vscode.java.fetchUsageData, vscode.java.validateLaunchConfig, vscode.java.resolveInlineVariables, vscode.java.resolveClassFilters, vscode.java.resolveMainMethod, vscode.java.resolveClasspath, vscode.java.resolveBuildFiles, vscode.java.resolveMainClass, vscode.java.updateDebugSettings, vscode.java.resolveSourceUri, vscode.java.fetchPlatformSettings, vscode.java.buildWorkspace, vscode.java.startDebugSession, vscode.java.inferLaunchCommandLength, vscode.java.resolveElementAtSelection, vscode.java.resolveJavaExecutable]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.377
+!MESSAGE >> initialized
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.851
+!MESSAGE RepositoryRegistryUpdateJob finished 476ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.863
+!MESSAGE Importers: GradleProjectImporter, MavenProjectImporter, EclipseProjectImporter, InvisibleProjectImporter
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.866
+!MESSAGE Importing Maven project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.881
+!MESSAGE Progressive import: reporting 1 new project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.888
+!MESSAGE Workspace initialized in 513ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:28.892
+!MESSAGE >> initialization job finished
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:56:29.227
+!MESSAGE Command _java.reloadBundles.command not supported on client
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:29.239
+!MESSAGE >> build jobs finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:29.239
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:29.677
+!MESSAGE Reconciled 1. Took 0 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:30.943
+!MESSAGE begin problem for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:30.945
+!MESSAGE 0 problems reported for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:30.950
+!MESSAGE Validated 1. Took 622 ms
+
+!ENTRY java-debug 1 0 2026-08-02 00:56:31.379
+!MESSAGE Starting com.microsoft.java.debug.plugin
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:31.671
+!MESSAGE Updated computing-manager in 2430 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:33.806
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:35.038
+!MESSAGE >> shutdown
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:35.048
+!MESSAGE >> exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:35.178
+!MESSAGE Shutdown received... waking up main thread
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:56:35.182
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:
+!SESSION 2026-08-02 00:57:20.865 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.11
+java.vendor=Arch Linux
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/huyhappy/.config/nvim/.nvim_jdtls
+
+!ENTRY com.microsoft.java.test.plugin 4 0 2026-08-02 00:57:21.337
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: com.microsoft.java.test.plugin [109]
+  Unresolved requirement: Require-Bundle: org.eclipse.jdt.junit4.runtime
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2041)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.831
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.865
+!MESSAGE Started org.eclipse.buildship.core 22ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.866
+!MESSAGE Started org.eclipse.m2e.core 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.867
+!MESSAGE ProjectRegistryRefreshJob finished 1ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.943
+!MESSAGE Main thread is waiting
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.960
+!MESSAGE >> initialize
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:21.963
+!MESSAGE Initializing JDT Language Server (Standard)
+	- Version: 1.60.0-SNAPSHOT (OSGi 1.60.0.202606262232)
+	- Git Commit: 57ed41b - Update CHANGELOG.md for 1.60.0. (#3827)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.079
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit4.runtime_1.4.0.v20251113-1434.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.086
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit5.runtime_1.2.0.v20251113-1434.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.088
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit6.runtime_1.0.0.v20251112-1701.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.096
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit4.runtime_1.4.0.v20251113-1434.jar
+
+!ENTRY org.eclipse.jdt.junit5.runtime 4 0 2026-08-02 00:57:22.098
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit5.runtime [111]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[5.14.0,6.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1943)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.junit6.runtime 4 0 2026-08-02 00:57:22.099
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit6.runtime [112]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[6.0.0,7.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1943)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:57:22.099
+!MESSAGE Failed to load extension bundles 
+!STACK 1
+org.eclipse.core.runtime.CoreException: Load bundle list
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:175)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Contains: Bundle startup failed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit5.runtime_1.2.0.v20251113-1434.jar
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit5.runtime [111]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[5.14.0,6.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.start(EquinoxBundle.java:471)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.startBundles(BundleUtils.java:310)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:173)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Contains: Bundle startup failed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit6.runtime_1.0.0.v20251112-1701.jar
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit6.runtime [112]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[6.0.0,7.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.start(EquinoxBundle.java:471)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.startBundles(BundleUtils.java:310)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:173)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+!SUBENTRY 1 org.eclipse.jdt.ls.core 4 0 2026-08-02 00:57:22.100
+!MESSAGE Load bundle list
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-08-02 00:57:22.100
+!MESSAGE Bundle startup failed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit5.runtime_1.2.0.v20251113-1434.jar
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit5.runtime [111]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[5.14.0,6.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.start(EquinoxBundle.java:471)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.startBundles(BundleUtils.java:310)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:173)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-08-02 00:57:22.100
+!MESSAGE Bundle startup failed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.eclipse.jdt.junit6.runtime_1.0.0.v20251112-1701.jar
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit6.runtime [112]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[6.0.0,7.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.start(EquinoxBundle.java:471)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.startBundles(BundleUtils.java:310)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:173)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.106
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.107
+!MESSAGE Non-Static Commands: [java.project.import, java.project.changeImportedProjects, java.navigate.openTypeHierarchy, java.project.resolveStackTraceLocation, java.edit.handlePasteEvent, java.edit.stringFormatting, java.project.getSettings, java.project.resolveWorkspaceSymbol, java.project.upgradeGradle, java.project.createModuleInfo, java.vm.getAllInstalls, java.edit.organizeImports, java.project.refreshDiagnostics, java.getFullyQualifiedName, java.project.removeFromSourcePath, java.project.listSourcePaths, java.project.updateSettings, java.project.getAll, java.reloadBundles, java.project.isTestFile, java.project.resolveText, java.project.getClasspaths, java.navigate.resolveTypeHierarchy, java.getTroubleshootingInfo, java.edit.smartSemicolonDetection, java.project.updateSourceAttachment, java.project.updateClassPaths, java.decompile, java.protobuf.generateSources, java.project.resolveSourceAttachment, java.project.updateJdk, java.project.addToSourcePath, java.completion.onDidSelect]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.107
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.108
+!MESSAGE Non-Static Commands: [vscode.java.checkProjectSettings, vscode.java.isOnClasspath, vscode.java.fetchUsageData, vscode.java.validateLaunchConfig, vscode.java.resolveInlineVariables, vscode.java.resolveClassFilters, vscode.java.resolveMainMethod, vscode.java.resolveClasspath, vscode.java.resolveBuildFiles, vscode.java.resolveMainClass, vscode.java.updateDebugSettings, vscode.java.resolveSourceUri, vscode.java.fetchPlatformSettings, vscode.java.buildWorkspace, vscode.java.startDebugSession, vscode.java.inferLaunchCommandLength, vscode.java.resolveElementAtSelection, vscode.java.resolveJavaExecutable]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.121
+!MESSAGE >> initialized
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.636
+!MESSAGE RepositoryRegistryUpdateJob finished 517ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.648
+!MESSAGE Importers: GradleProjectImporter, MavenProjectImporter, EclipseProjectImporter, InvisibleProjectImporter
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.652
+!MESSAGE Importing Maven project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.663
+!MESSAGE Progressive import: reporting 1 new project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.670
+!MESSAGE Workspace initialized in 552ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:22.677
+!MESSAGE >> initialization job finished
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:57:23.028
+!MESSAGE Command _java.reloadBundles.command not supported on client
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:23.040
+!MESSAGE >> build jobs finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:23.040
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:23.477
+!MESSAGE Reconciled 1. Took 0 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:24.786
+!MESSAGE begin problem for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:24.788
+!MESSAGE 0 problems reported for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:24.794
+!MESSAGE Validated 1. Took 666 ms
+
+!ENTRY java-debug 1 0 2026-08-02 00:57:25.123
+!MESSAGE Starting com.microsoft.java.debug.plugin
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:25.477
+!MESSAGE Updated computing-manager in 2435 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:27.576
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:27.808
+!MESSAGE >> shutdown
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:27.997
+!MESSAGE >> exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:27.998
+!MESSAGE Shutdown received... waking up main thread
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:57:28.002
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:
+!SESSION 2026-08-02 00:58:37.825 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=21.0.11
+java.vendor=Arch Linux
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/huyhappy/.config/nvim/.nvim_jdtls
+
+!ENTRY com.microsoft.java.test.plugin 4 0 2026-08-02 00:58:38.320
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: com.microsoft.java.test.plugin [109]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="5.14.0"
+  Unresolved requirement: Require-Bundle: org.eclipse.jdt.junit5.runtime
+    -> Bundle-SymbolicName: org.eclipse.jdt.junit5.runtime; bundle-version="1.2.0.v20251113-1434"; singleton:="true"
+       org.eclipse.jdt.junit5.runtime [111]
+         Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[5.14.0,6.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2041)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.800
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.jdt.junit5.runtime 4 0 2026-08-02 00:58:38.813
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit5.runtime [111]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[5.14.0,6.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2043)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.junit6.runtime 4 0 2026-08-02 00:58:38.814
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.eclipse.jdt.junit6.runtime [112]
+  Unresolved requirement: Require-Bundle: junit-jupiter-api; bundle-version="[6.0.0,7.0.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel$2.run(ModuleContainer.java:2110)
+	at org.eclipse.osgi.internal.framework.EquinoxContainerAdaptor$1$1.execute(EquinoxContainerAdaptor.java:146)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2101)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.incStartLevel(ModuleContainer.java:2043)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.doContainerStartLevel(ModuleContainer.java:2003)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1915)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.840
+!MESSAGE Started org.eclipse.buildship.core 28ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.840
+!MESSAGE Started org.eclipse.m2e.core 0ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.842
+!MESSAGE ProjectRegistryRefreshJob finished 1ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.913
+!MESSAGE Main thread is waiting
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.929
+!MESSAGE >> initialize
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:38.933
+!MESSAGE Initializing JDT Language Server (Standard)
+	- Version: 1.60.0-SNAPSHOT (OSGi 1.60.0.202606262232)
+	- Git Commit: 57ed41b - Update CHANGELOG.md for 1.60.0. (#3827)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.052
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-api_5.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.054
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-api_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.064
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-engine_5.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.066
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-engine_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.068
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-migrationsupport_5.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.070
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-params_5.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.072
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-params_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.074
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-commons_1.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.077
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-commons_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.079
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-engine_1.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.081
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-engine_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.083
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-launcher_1.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.086
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-launcher_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.190
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-runner_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.292
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-api_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.396
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-api_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.501
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-commons_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.607
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-engine_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.714
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-engine_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.823
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-vintage-engine_5.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:39.931
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.apiguardian.api_1.1.2.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.042
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.jacoco.core_0.8.14.202510111229.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.153
+!MESSAGE Installed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.opentest4j_1.3.0.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.166
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-engine_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.171
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-api_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.176
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-launcher_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.180
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-vintage-engine_5.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.184
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-params_5.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.185
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-engine_1.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.186
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-commons_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.189
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-runner_1.14.1.jar
+
+!ENTRY org.jacoco.core 4 0 2026-08-02 00:58:40.191
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.jacoco.core [134]
+  Unresolved requirement: Import-Package: org.objectweb.asm; version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1943)
+	at org.eclipse.osgi.container.ModuleContainer$ContainerStartLevel.dispatchEvent(ModuleContainer.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:341)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.193
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-engine_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.194
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-api_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.196
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-engine_5.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.197
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.opentest4j_1.3.0.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.198
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-engine_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.200
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-migrationsupport_5.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.202
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-params_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.203
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-api_5.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.206
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-jupiter-engine_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.207
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-commons_1.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.207
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-commons_6.0.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.208
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.apiguardian.api_1.1.2.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.208
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-suite-api_1.14.1.jar
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.208
+!MESSAGE Started reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/junit-platform-launcher_1.14.3.jar
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:58:40.209
+!MESSAGE Failed to load extension bundles 
+!STACK 1
+org.eclipse.core.runtime.CoreException: Load bundle list
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:175)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Contains: Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar
+Contains: Bundle startup failed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.jacoco.core_0.8.14.202510111229.jar
+org.osgi.framework.BundleException: Could not resolve module: org.jacoco.core [134]
+  Unresolved requirement: Import-Package: org.objectweb.asm; version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.start(EquinoxBundle.java:471)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.startBundles(BundleUtils.java:310)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:173)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+!SUBENTRY 1 org.eclipse.jdt.ls.core 4 0 2026-08-02 00:58:40.210
+!MESSAGE Load bundle list
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-08-02 00:58:40.210
+!MESSAGE Failed to get bundleInfo for bundle from /home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/com.microsoft.java.test.runner-jar-with-dependencies.jar
+!SUBENTRY 2 org.eclipse.jdt.ls.core 4 0 2026-08-02 00:58:40.210
+!MESSAGE Bundle startup failed reference:file:/home/huyhappy/.local/share/nvim/mason/packages/java-test/extension/server/org.jacoco.core_0.8.14.202510111229.jar
+!STACK 0
+org.osgi.framework.BundleException: Could not resolve module: org.jacoco.core [134]
+  Unresolved requirement: Import-Package: org.objectweb.asm; version="[9.9.0,9.10.0)"
+
+	at org.eclipse.osgi.container.Module.start(Module.java:495)
+	at org.eclipse.osgi.internal.framework.EquinoxBundle.start(EquinoxBundle.java:471)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.startBundles(BundleUtils.java:310)
+	at org.eclipse.jdt.ls.core.internal.handlers.BundleUtils.loadBundles(BundleUtils.java:173)
+	at org.eclipse.jdt.ls.core.internal.handlers.InitHandler.handleInitializationOptions(InitHandler.java:100)
+	at org.eclipse.jdt.ls.core.internal.handlers.BaseInitHandler.initialize(BaseInitHandler.java:68)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer.initialize(JDTLanguageServer.java:287)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.request(GenericEndpoint.java:128)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleRequest(RemoteEndpoint.java:265)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:195)
+	at org.eclipse.jdt.ls.core.internal.ParentProcessWatcher.lambda$1(ParentProcessWatcher.java:86)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:189)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:97)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.216
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.216
+!MESSAGE Non-Static Commands: [java.project.import, java.project.changeImportedProjects, java.navigate.openTypeHierarchy, java.project.resolveStackTraceLocation, java.edit.handlePasteEvent, java.edit.stringFormatting, java.project.getSettings, java.project.resolveWorkspaceSymbol, java.project.upgradeGradle, java.project.createModuleInfo, java.vm.getAllInstalls, java.edit.organizeImports, java.project.refreshDiagnostics, java.getFullyQualifiedName, java.project.removeFromSourcePath, java.project.listSourcePaths, java.project.updateSettings, java.project.getAll, java.reloadBundles, java.project.isTestFile, java.project.resolveText, java.project.getClasspaths, java.navigate.resolveTypeHierarchy, java.getTroubleshootingInfo, java.edit.smartSemicolonDetection, java.project.updateSourceAttachment, java.project.updateClassPaths, java.decompile, java.protobuf.generateSources, java.project.resolveSourceAttachment, java.project.updateJdk, java.project.addToSourcePath, java.completion.onDidSelect]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.217
+!MESSAGE Static Commands: []
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.217
+!MESSAGE Non-Static Commands: [vscode.java.checkProjectSettings, vscode.java.isOnClasspath, vscode.java.fetchUsageData, vscode.java.validateLaunchConfig, vscode.java.resolveInlineVariables, vscode.java.resolveClassFilters, vscode.java.resolveMainMethod, vscode.java.resolveClasspath, vscode.java.resolveBuildFiles, vscode.java.resolveMainClass, vscode.java.updateDebugSettings, vscode.java.resolveSourceUri, vscode.java.fetchPlatformSettings, vscode.java.buildWorkspace, vscode.java.startDebugSession, vscode.java.inferLaunchCommandLength, vscode.java.resolveElementAtSelection, vscode.java.resolveJavaExecutable]
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.224
+!MESSAGE RepositoryRegistryUpdateJob finished 1ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.230
+!MESSAGE >> initialized
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.238
+!MESSAGE Importers: GradleProjectImporter, MavenProjectImporter, EclipseProjectImporter, InvisibleProjectImporter
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.243
+!MESSAGE Importing Maven project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.257
+!MESSAGE Progressive import: reporting 1 new project(s)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.264
+!MESSAGE Workspace initialized in 41ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.271
+!MESSAGE >> initialization job finished
+
+!ENTRY org.eclipse.jdt.ls.core 4 0 2026-08-02 00:58:40.616
+!MESSAGE Command _java.reloadBundles.command not supported on client
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.627
+!MESSAGE >> build jobs finished
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:40.628
+!MESSAGE >> registerWatchers'
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:41.065
+!MESSAGE Reconciled 1. Took 0 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:42.389
+!MESSAGE begin problem for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:42.392
+!MESSAGE 0 problems reported for /ComputingManagerApplication.java
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:42.396
+!MESSAGE Validated 1. Took 730 ms
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:43.004
+!MESSAGE Updated computing-manager in 2375 ms
+
+!ENTRY java-debug 1 0 2026-08-02 00:58:44.368
+!MESSAGE Starting com.microsoft.java.debug.plugin
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:44.717
+!MESSAGE >> shutdown
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:44.728
+!MESSAGE >> exit
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:45.071
+!MESSAGE Shutdown received... waking up main thread
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2026-08-02 00:58:45.077
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:
+
+!ENTRY org.eclipse.core.resources 4 2 2026-08-02 00:58:45.169
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.core.resources".
+!STACK 0
+java.lang.NullPointerException: Cannot invoke "org.eclipse.m2e.core.internal.MavenPluginActivator.getMavenMarkerManager()" because the return value of "org.eclipse.m2e.core.internal.MavenPluginActivator.getDefault()" is null
+	at org.eclipse.m2e.core.internal.builder.MavenBuilderImpl.processBuildResults(MavenBuilderImpl.java:367)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilderImpl.build(MavenBuilderImpl.java:200)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$1.method(MavenBuilder.java:164)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$1.method(MavenBuilder.java:1)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.lambda$1(MavenBuilder.java:109)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:462)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:295)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.lambda$0(MavenBuilder.java:100)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:462)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:342)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:281)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.execute(MavenBuilder.java:83)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder.build(MavenBuilder.java:192)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:1146)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:303)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:363)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:486)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:489)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:601)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:549)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:631)
+	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:208)
+	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:309)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.resources 4 75 2026-08-02 00:58:45.170
+!MESSAGE Errors occurred during the build.
+!SUBENTRY 1 org.eclipse.m2e.core 4 75 2026-08-02 00:58:45.170
+!MESSAGE Errors running builder 'Maven Project Builder' on project 'computing-manager'.
+!STACK 0
+java.lang.NullPointerException: Cannot invoke "org.eclipse.m2e.core.internal.MavenPluginActivator.getMavenMarkerManager()" because the return value of "org.eclipse.m2e.core.internal.MavenPluginActivator.getDefault()" is null
+	at org.eclipse.m2e.core.internal.builder.MavenBuilderImpl.processBuildResults(MavenBuilderImpl.java:367)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilderImpl.build(MavenBuilderImpl.java:200)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$1.method(MavenBuilder.java:164)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$1.method(MavenBuilder.java:1)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.lambda$1(MavenBuilder.java:109)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:462)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:295)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.lambda$0(MavenBuilder.java:100)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.executeBare(MavenExecutionContext.java:462)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:342)
+	at org.eclipse.m2e.core.internal.embedder.MavenExecutionContext.execute(MavenExecutionContext.java:281)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder$BuildMethod.execute(MavenBuilder.java:83)
+	at org.eclipse.m2e.core.internal.builder.MavenBuilder.build(MavenBuilder.java:192)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:1146)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:303)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:363)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:486)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:489)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:601)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:549)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:631)
+	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:208)
+	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:309)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.core.jobs 4 2 2026-08-02 00:58:45.178
+!MESSAGE An internal error occurred during: "Initialize workspace".
+!STACK 0
+java.lang.NullPointerException: Cannot invoke "org.eclipse.jdt.ls.core.internal.preferences.PreferenceManager.getPreferences()" because the return value of "org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin.getPreferencesManager()" is null
+	at org.eclipse.jdt.ls.core.internal.handlers.WorkspaceDiagnosticsHandler.publishDiagnostics(WorkspaceDiagnosticsHandler.java:330)
+	at org.eclipse.jdt.ls.core.internal.handlers.WorkspaceDiagnosticsHandler.publishDiagnostics(WorkspaceDiagnosticsHandler.java:260)
+	at org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer$2.run(JDTLanguageServer.java:341)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)

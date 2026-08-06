@@ -1,0 +1,5 @@
+PREF_FILTER_TESTCODE=false
+eclipse.preferences.version=1
+java.project.resourceFilters=node_modules\:\:\\.git
+m2e.disableTestClasspathFlag=false
+maven.multiModuleProjectDirectory=/home/huyhappy/Git-projects/product-service/product-service
