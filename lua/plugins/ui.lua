@@ -42,14 +42,20 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     config = function()
-      -- Hiện đang có bao nhiêu debug session chạy + tên, để biết ngay tắt xong thật chưa
-      -- thay vì phải đoán (bấm <leader>dX xong không thấy gì báo là còn chạy hay đã tắt).
+      -- Hiện đang có bao nhiêu debug session chạy + tên (+ port nếu đã bắt được từ log Spring
+      -- Boot), để biết ngay tắt xong thật chưa thay vì phải đoán, và khỏi mở console tìm port.
       local function dap_status()
         local ok, dap = pcall(require, "dap")
         if not ok then return "" end
+        local ok_status, dap_status_mod = pcall(require, "dap_status")
         local sessions = dap.sessions()
         local names = {}
-        for _, s in pairs(sessions) do table.insert(names, s.config.name:match("^[^:]+") or s.config.name) end
+        for _, s in pairs(sessions) do
+          local nm = s.config.name:match("^[^:]+") or s.config.name
+          local port = ok_status and dap_status_mod.ports[s.config.name]
+          if port then nm = nm .. ":" .. port end
+          table.insert(names, nm)
+        end
         if #names == 0 then return "" end
         return "🐛 " .. table.concat(names, ", ")
       end

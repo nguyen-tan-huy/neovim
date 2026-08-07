@@ -47,11 +47,35 @@ return {
     -- xem được log lúc chương trình chạy xong/crash quá nhanh, session đã biến mất khỏi
     -- dap.sessions() trước khi kịp bấm xem console.
 
+    local dap_status = require("dap_status")
+
     dap.defaults.fallback.terminal_win_cmd = function(config)
       local buf = vim.api.nvim_create_buf(false, true)
       vim.bo[buf].bufhidden = "hide"
       term_bufs[config.name] = buf
       last_session_name = config.name
+      dap_status.ports[config.name] = nil
+
+      -- Dò dòng kiểu "Tomcat/Netty/Jetty started on port(s): 8080 ..." (Spring Boot) trong log
+      -- để biết port đang chạy, hiện lên statusline (🐛) + tiêu đề console nổi - đỡ phải mở
+      -- console lên đọc log tìm tay. Tự gỡ theo dõi (return true) ngay khi bắt được port.
+      vim.api.nvim_buf_attach(buf, false, {
+        on_lines = function(_, b)
+          if not vim.api.nvim_buf_is_valid(b) then return true end
+          if dap_status.ports[config.name] then return true end
+          for _, line in ipairs(vim.api.nvim_buf_get_lines(b, math.max(0, vim.api.nvim_buf_line_count(b) - 5), -1, false)) do
+            local port = line:match("[Ss]tarted on port%(s%):%s*(%d+)")
+            if port then
+              dap_status.ports[config.name] = port
+              vim.schedule(function()
+                vim.notify(config.name .. ": đang chạy ở port " .. port, vim.log.levels.INFO)
+                vim.cmd("redrawstatus")
+              end)
+              return true
+            end
+          end
+        end,
+      })
       return buf
     end
 
@@ -77,6 +101,7 @@ return {
         return
       end
       close_float()
+      local port = dap_status.ports[name]
       local width = math.floor(vim.o.columns * 0.85)
       local height = math.floor(vim.o.lines * 0.75)
       float_win = vim.api.nvim_open_win(buf, true, {
@@ -86,7 +111,7 @@ return {
         row = math.floor((vim.o.lines - height) / 2),
         col = math.floor((vim.o.columns - width) / 2),
         border = "rounded",
-        title = " Console: " .. name .. (session and "" or " (đã tắt)") .. " ",
+        title = " Console: " .. name .. (port and (" :" .. port) or "") .. (session and "" or " (đã tắt)") .. " ",
         title_pos = "center",
       })
       vim.wo[float_win].number = false

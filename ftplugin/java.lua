@@ -81,12 +81,43 @@ if not root_dir then
   return
 end
 
--- Chỉ lấy tên thư mục cuối làm project_name thì 2 root_dir KHÁC NHAU nhưng trùng tên thư mục
--- cuối (vd repo gốc "product-service" và module con cũng tên "product-service" có mvnw riêng)
--- sẽ ra CÙNG 1 workspace_dir -> 2 tiến trình jdtls tranh nhau khoá workspace Eclipse -> tiến
--- trình sau bị kill ngay (exit code 13). Thêm hash của root_dir đầy đủ để đảm bảo không đụng.
-local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t") .. "-" .. vim.fn.sha256(root_dir):sub(1, 8)
-local workspace_dir = vim.fn.stdpath("cache") .. "/jdtls-workspace/" .. project_name
+-- project_name (tên thư mục cuối, KHÔNG hash) dùng làm gợi ý field "projectName" cho profile
+-- debug - phải giữ đúng tên Maven/Eclipse project thật, không được đụng vào, nếu không jdtls
+-- sẽ không tra được classpath/java executable ("Could not resolve java executable for ...").
+local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
+
+-- workspace_dir dùng tên RIÊNG (project_name + hash root_dir) để tránh 2 root_dir KHÁC NHAU
+-- nhưng trùng tên thư mục cuối (vd repo gốc "product-service" và module con cũng tên
+-- "product-service" có mvnw riêng) bị chung 1 workspace_dir -> 2 tiến trình jdtls tranh nhau
+-- khoá workspace Eclipse -> tiến trình sau bị kill ngay (exit code 13).
+local workspace_id = project_name .. "-" .. vim.fn.sha256(root_dir):sub(1, 8)
+local workspace_dir = vim.fn.stdpath("cache") .. "/jdtls-workspace/" .. workspace_id
+
+--- Tìm các module con có pom.xml riêng nhưng KHÔNG khai báo trong <modules> của pom cha
+--- (và không có mvnw riêng - loại đó tự tách root_dir/workspace riêng rồi, xem tìm root_dir
+--- ở trên). jdtls không tự import những module "mồ côi" này -> gd/resolve classpath/debug
+--- không hoạt động cho chúng dù vẫn chung root_dir với các module khác.
+---@param dir string
+---@return string[]
+local function find_orphan_maven_modules(dir)
+  local root_pom = dir .. "/pom.xml"
+  if vim.fn.filereadable(root_pom) == 0 then return {} end
+  local content = table.concat(vim.fn.readfile(root_pom), "\n")
+  local declared = {}
+  for m in content:gmatch("<module>%s*([^<%s]+)%s*</module>") do
+    declared[m] = true
+  end
+  local orphans = {}
+  for _, entry in ipairs(vim.fn.readdir(dir) or {}) do
+    local sub = dir .. "/" .. entry
+    if not declared[entry] and vim.fn.isdirectory(sub) == 1
+      and vim.fn.filereadable(sub .. "/pom.xml") == 1
+      and vim.fn.filereadable(sub .. "/mvnw") == 0 then
+      table.insert(orphans, sub)
+    end
+  end
+  return orphans
+end
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -136,6 +167,21 @@ local config = {
   },
   on_attach = function(_, bufnr)
     jdtls.setup_dap({ hotcodereplace = "manual" })
+
+    -- Import các module "mồ côi" (pom.xml riêng, không có trong <modules> pom cha) như workspace
+    -- folder riêng, KHÔNG đụng vào pom.xml của project - jdtls vẫn coi chúng là project đầy đủ
+    -- (resolve classpath/java executable hoạt động), đồng thời vẫn chung 1 client với các module
+    -- khác nên gd/Ctrl+B qua lại các module vẫn hoạt động (khác với cách tự tách root_dir riêng).
+    do
+      local existing = {}
+      for _, wf in ipairs(vim.lsp.buf.list_workspace_folders()) do existing[wf] = true end
+      for _, dir in ipairs(find_orphan_maven_modules(root_dir)) do
+        if not existing[dir] then
+          vim.lsp.buf.add_workspace_folder(dir)
+          vim.notify("jdtls: import thêm module mồ côi vào workspace: " .. dir, vim.log.levels.INFO)
+        end
+      end
+    end
 
     -- Nạp profile debug đã lưu của project trước, rồi mới để jdtls tự dò thêm main class mới
     -- (jdtls chỉ merge thêm/update theo tên+cwd, không xoá profile đã có sẵn trong danh sách).
