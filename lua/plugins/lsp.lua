@@ -59,9 +59,17 @@ return {
           map("n", "gr", vim.lsp.buf.references, "Find references")
           map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
 
-          -- Giống Ctrl+B của IntelliJ: đứng ở nơi gọi hàm -> nhảy tới khai báo;
-          -- đứng ngay tại khai báo -> nhảy tới danh sách nơi hàm được dùng (usages)
+          -- Giống Ctrl+B của IntelliJ: đứng ở nơi gọi hàm -> nhảy tới code implement
+          -- (nếu là method của interface thì nhảy thẳng vào class implement, không dừng
+          -- ở khai báo trừu tượng của interface); đứng ngay tại khai báo -> nhảy tới
+          -- danh sách nơi hàm được dùng (usages)
           map("n", "<C-b>", function()
+            -- File xhtml (JSF/PrimeFaces): nếu cursor đang đứng trong EL expression
+            -- (#{bean.action}) thì nhảy sang Java backing bean, lemminx không hiểu EL
+            -- nên không tự làm được (xem lua/el_nav.lua).
+            if vim.bo[buf].filetype == "xhtml" and require("el_nav").jump_from_cursor() then
+              return
+            end
             local params = vim.lsp.util.make_position_params(0, "utf-16")
             vim.lsp.buf_request(buf, "textDocument/definition", params, function(_, result)
               if not result or vim.tbl_isempty(result) then
@@ -76,11 +84,22 @@ return {
 
               if uri == cur_uri and range and range.start.line == cur_line then
                 vim.lsp.buf.references()
-              else
-                vim.lsp.buf.definition()
+                return
               end
+
+              -- Không đứng tại khai báo: thử textDocument/implementation trước.
+              -- Với method của interface, server trả về class implement thật;
+              -- nếu server không hỗ trợ hoặc không có implementation nào thì
+              -- rơi về definition như cũ.
+              vim.lsp.buf_request(buf, "textDocument/implementation", params, function(_, impl_result)
+                if impl_result and not vim.tbl_isempty(impl_result) then
+                  vim.lsp.buf.implementation()
+                else
+                  vim.lsp.buf.definition()
+                end
+              end)
             end)
-          end, "Go to declaration / usages (Ctrl+B)")
+          end, "Go to implementation / usages (Ctrl+B)")
           map("n", "K", vim.lsp.buf.hover, "Hover doc")
           map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
           map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")

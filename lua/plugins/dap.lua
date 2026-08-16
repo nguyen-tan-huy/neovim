@@ -86,6 +86,25 @@ return {
       float_win = nil
     end
 
+    -- Buffer REPL của nvim-dap (dùng CHUNG cho mọi session, không phải per-session như
+    -- term_bufs). Cần fallback về đây vì nhiều debug adapter (vd: Java debug adapter)
+    -- KHÔNG dùng runInTerminal - chúng gửi log chương trình qua OutputEvent, và nvim-dap
+    -- tự đổ thẳng vào REPL thay vì gọi terminal_win_cmd, nên term_bufs không bao giờ có
+    -- gì cho các session đó (đây là lý do <leader>dt báo "chưa có console" suốt lúc chạy).
+    local function get_repl_buf()
+      for _, b in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.bo[b].buftype == "prompt" and vim.api.nvim_buf_get_name(b):match("dap%-repl%-%d+") then
+          return b
+        end
+      end
+      -- REPL chưa từng mở lần nào trong session nvim này -> mở rồi ẩn ngay để lấy bufnr.
+      local replm = require("dap.repl")
+      replm.open()
+      local buf = vim.api.nvim_get_current_buf()
+      replm.close({ mode = "toggle" })
+      return buf
+    end
+
     --- Mở/refresh cửa sổ nổi hiện log của session đang focus; nếu không còn session nào đang
     --- chạy (đã tắt/crash) thì fallback về log của session GẦN NHẤT, để không bị mất log.
     local function show_float_for_focused_session()
@@ -96,9 +115,10 @@ return {
         return
       end
       local buf = term_bufs[name]
+      local is_repl_fallback = false
       if not buf or not vim.api.nvim_buf_is_valid(buf) then
-        vim.notify("Session '" .. name .. "' chưa có console (chưa launch xong?).", vim.log.levels.WARN)
-        return
+        buf = get_repl_buf()
+        is_repl_fallback = true
       end
       close_float()
       local port = dap_status.ports[name]
@@ -111,7 +131,9 @@ return {
         row = math.floor((vim.o.lines - height) / 2),
         col = math.floor((vim.o.columns - width) / 2),
         border = "rounded",
-        title = " Console: " .. name .. (port and (" :" .. port) or "") .. (session and "" or " (đã tắt)") .. " ",
+        title = is_repl_fallback
+            and " REPL (dùng chung mọi session - " .. name .. (session and "" or " đã tắt") .. ") "
+          or (" Console: " .. name .. (port and (" :" .. port) or "") .. (session and "" or " (đã tắt)") .. " "),
         title_pos = "center",
       })
       vim.wo[float_win].number = false
@@ -191,13 +213,17 @@ return {
     vim.keymap.set("n", "<leader>dR", function() dap.restart() end, { desc = "Debug: restart session hiện tại" })
 
     -- Chạy thêm 1 profile debug mới SONG SONG với session đang chạy (không tắt session cũ),
-    -- giống chạy nhiều Run/Debug Configuration cùng lúc của IntelliJ. Trước khi chạy, cho sửa
-    -- lại biến môi trường (chỉ áp dụng cho LẦN CHẠY NÀY, không đụng vào profile đã lưu trên
-    -- đĩa - muốn lưu luôn thì sửa profile bằng <leader>jpe hoặc lưu tay bằng <leader>jps).
+    -- giống chạy nhiều Run/Debug Configuration cùng lúc của IntelliJ. Sửa main class/working
+    -- directory/VM args/program args/biến môi trường qua 1 panel trước khi chạy - thay đổi được
+    -- áp dụng thẳng vào profile đã chọn (trong dap.configurations.java) và tự lưu lại xuống đĩa
+    -- luôn, để tắt/mở lại Neovim vẫn còn, không cần bấm thêm <leader>jps.
     vim.keymap.set("n", "<leader>dp", function()
-      local configs = dap.configurations[vim.bo.filetype]
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if not root_dir then return end
+      require("dap_profiles").ensure_loaded(root_dir)
+      local configs = dap.configurations.java
       if not configs or #configs == 0 then
-        vim.notify("Không có debug configuration nào cho filetype '" .. vim.bo.filetype .. "'.", vim.log.levels.WARN)
+        vim.notify("Không có debug configuration nào cho project này.", vim.log.levels.WARN)
         return
       end
       vim.ui.select(configs, {
@@ -205,15 +231,83 @@ return {
         format_item = function(c) return c.name end,
       }, function(choice)
         if not choice then return end
-        require("dap_profiles").edit_env(choice.env, function(env)
-          local run_config = choice
-          if env ~= nil then -- nil = huỷ popup env, giữ nguyên env cũ của profile
-            run_config = vim.tbl_extend("force", {}, choice, { env = next(env) and env or nil })
+        require("dap_profiles").edit_overrides(choice, function(result)
+          if result then -- nil = huỷ panel, giữ nguyên profile gốc
+            choice.mainClass = result.mainClass
+            choice.cwd = result.cwd
+            choice.vmArgs = result.vmArgs
+            choice.args = result.args
+            choice.env = next(result.env) and result.env or nil
+            require("dap_profiles").save(root_dir, configs)
           end
-          dap.run(run_config, { new = true }) -- new = true: luôn tạo session mới, không đụng session đang chạy
+          dap.run(choice, { new = true }) -- new = true: luôn tạo session mới, không đụng session đang chạy
         end)
       end)
     end, { desc = "Debug: chạy thêm profile mới (song song)" })
+
+    -- Quản lý danh sách debug profile (lưu ở <project_root>/.nvim/dap-profiles.json) - toàn cục,
+    -- KHÔNG cần đang đứng trong buffer .java (chỉ <leader>jpc ở ftplugin/java.lua mới cần, vì nó
+    -- dò package/class name từ chính file đang mở). Xem lua/dap_profiles.lua.
+    local function jp_mainclass_hint()
+      if vim.bo.filetype == "java" then
+        return require("jdtls.util").resolve_classname()
+      end
+      return nil
+    end
+
+    -- Reload danh sách profile debug: nạp lại file đã lưu + cho jdtls dò thêm main class mới,
+    -- rồi tự lưu lại xuống đĩa (giống F5 refresh danh sách Run/Debug Configuration của IntelliJ).
+    vim.keymap.set("n", "<leader>jpl", function()
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if not root_dir then return end
+      local dap_profiles = require("dap_profiles")
+      dap.configurations.java = dap_profiles.load(root_dir)
+      require("jdtls.dap").setup_dap_main_class_configs({
+        on_ready = function()
+          local configs = dap.configurations.java
+          dap_profiles.save(root_dir, configs)
+          vim.notify(string.format("Đã reload %d profile debug.", #configs), vim.log.levels.INFO)
+        end,
+      })
+    end, { desc = "Debug profile: reload danh sách" })
+
+    -- Lưu danh sách profile debug hiện tại (đã sửa tay bằng <leader>dp thêm session, hoặc để
+    -- backup thủ công) xuống <project_root>/.nvim/dap-profiles.json.
+    vim.keymap.set("n", "<leader>jps", function()
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if not root_dir then return end
+      require("dap_profiles").save(root_dir, dap.configurations.java or {})
+    end, { desc = "Debug profile: lưu danh sách hiện tại" })
+
+    -- Thêm 1 profile debug mới (nhập tay tên/args/vmArgs), main class gợi ý sẵn theo
+    -- package.class nếu đang đứng trong 1 file Java (vẫn sửa được nếu muốn trỏ tới class khác).
+    vim.keymap.set("n", "<leader>jpa", function()
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if not root_dir then return end
+      require("dap_profiles").add("java", root_dir, {
+        mainClass = jp_mainclass_hint(),
+        projectName = vim.fn.fnamemodify(root_dir, ":p:h:t"),
+      })
+    end, { desc = "Debug profile: thêm mới" })
+
+    -- Sửa 1 profile debug có sẵn (chọn từ danh sách), tự lưu lại xuống đĩa. Field nào profile
+    -- đang thiếu (vd chưa có mainClass/projectName) thì gợi ý sẵn theo file Java đang mở (nếu có),
+    -- giống <leader>jpa, đỡ phải gõ tay lại từ đầu.
+    vim.keymap.set("n", "<leader>jpe", function()
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if not root_dir then return end
+      require("dap_profiles").edit("java", root_dir, {
+        mainClass = jp_mainclass_hint(),
+        projectName = vim.fn.fnamemodify(root_dir, ":p:h:t"),
+      })
+    end, { desc = "Debug profile: sửa" })
+
+    -- Xoá 1 profile debug (chọn từ danh sách), tự lưu lại xuống đĩa.
+    vim.keymap.set("n", "<leader>jpd", function()
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if not root_dir then return end
+      require("dap_profiles").delete("java", root_dir)
+    end, { desc = "Debug profile: xoá" })
 
     -- Chuyển session đang "focus" (session bị step/continue/breakpoint tác động) sang 1 session
     -- khác trong số các session/profile đang chạy song song.

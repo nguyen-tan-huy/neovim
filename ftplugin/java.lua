@@ -119,6 +119,29 @@ local function find_orphan_maven_modules(dir)
   return orphans
 end
 
+--- Tìm các module Maven KHÁC cùng reactor với module hiện tại (vd đang mở product-web, tìm ra
+--- product-core, product-tool...), dựa vào <module> khai báo trong pom.xml của thư mục CHA
+--- (root_dir/..). Mỗi module trong reactor này đang được jdtls mở thành project/workspace RIÊNG
+--- (root_dir = pom.xml gần nhất, không phải root reactor), nên module hiện tại đang phụ thuộc
+--- các module khác qua JAR đã build sẵn trong ~/.m2, KHÔNG phải qua source - sửa code module
+--- khác sẽ không tự áp dụng khi debug cho tới khi mvn install lại + restart.
+---@param dir string root_dir hiện tại (module đang mở)
+---@return string[] đường dẫn tuyệt đối các module khác cùng reactor
+local function find_sibling_maven_modules(dir)
+  local parent = vim.fs.dirname(dir)
+  local parent_pom = parent .. "/pom.xml"
+  if vim.fn.filereadable(parent_pom) == 0 then return {} end
+  local content = table.concat(vim.fn.readfile(parent_pom), "\n")
+  local siblings = {}
+  for m in content:gmatch("<module>%s*([^<%s]+)%s*</module>") do
+    local sib = parent .. "/" .. m
+    if sib ~= dir and vim.fn.isdirectory(sib) == 1 and vim.fn.filereadable(sib .. "/pom.xml") == 1 then
+      table.insert(siblings, sib)
+    end
+  end
+  return siblings
+end
+
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Dùng path tuyệt đối, KHÔNG gọi "jdtls" theo PATH - trên PATH là bản Mason mới nhất
@@ -185,6 +208,7 @@ local config = {
 
     -- Nạp profile debug đã lưu của project trước, rồi mới để jdtls tự dò thêm main class mới
     -- (jdtls chỉ merge thêm/update theo tên+cwd, không xoá profile đã có sẵn trong danh sách).
+    vim.g.dap_profiles_last_root_dir = root_dir
     require("dap").configurations.java = dap_profiles.load(root_dir)
     require("jdtls.dap").setup_dap_main_class_configs({
       on_ready = function()
@@ -242,6 +266,36 @@ local config = {
       jdtls.update_projects_config({ select_mode = "all" })
     end, vim.tbl_extend("force", opts, { desc = "Java: reload project config (toàn bộ project)" }))
 
+    -- Import module Maven KHÁC cùng reactor (vd product-core) vào CHUNG workspace jdtls của
+    -- module hiện tại (vd product-web), để: (1) gd/references nhảy thẳng vào source thay vì
+    -- decompiled jar, (2) jdtls (m2e) tự resolve dependency từ source project trong workspace
+    -- thay vì jar trong ~/.m2, nên sửa code module kia + hot reload (Ctrl+\) áp dụng được luôn
+    -- khi đang debug module này - không cần mvn install lại rồi restart session.
+    vim.keymap.set("n", "<leader>jaw", function()
+      local siblings = find_sibling_maven_modules(root_dir)
+      if #siblings == 0 then
+        vim.notify("Không tìm thấy module Maven nào khác cùng reactor với module này.", vim.log.levels.WARN)
+        return
+      end
+      local existing = {}
+      for _, wf in ipairs(vim.lsp.buf.list_workspace_folders()) do existing[wf] = true end
+      local candidates = vim.tbl_filter(function(s) return not existing[s] end, siblings)
+      if #candidates == 0 then
+        vim.notify("Tất cả module cùng reactor đã được import vào workspace này rồi.", vim.log.levels.INFO)
+        return
+      end
+      vim.ui.select(candidates, {
+        prompt = "Import module vào workspace hiện tại (sửa code + hot reload chung với module đang debug):",
+        format_item = function(s) return vim.fn.fnamemodify(s, ":t") end,
+      }, function(choice)
+        if not choice then return end
+        vim.lsp.buf.add_workspace_folder(choice)
+        vim.notify(
+          "Đã import " .. choice .. " vào workspace. Chạy <leader>ju để jdtls resolve lại dependency từ source.",
+          vim.log.levels.INFO)
+      end)
+    end, vim.tbl_extend("force", opts, { desc = "Java: import module khác cùng reactor vào workspace" }))
+
     -- Xoá sạch workspace cache + restart jdtls (giống Invalidate Caches/Restart của IntelliJ)
     vim.keymap.set("n", "<leader>jR", function()
       vim.ui.select({ "Huỷ", "Xoá cache + restart jdtls" }, {
@@ -251,34 +305,6 @@ local config = {
         require("jdtls.setup").wipe_data_and_restart()
       end)
     end, vim.tbl_extend("force", opts, { desc = "Java: xoá cache + reimport project sạch" }))
-
-    -- Reload danh sách profile debug: nạp lại file đã lưu + cho jdtls dò thêm main class mới,
-    -- rồi tự lưu lại xuống đĩa (giống F5 refresh danh sách Run/Debug Configuration của IntelliJ).
-    vim.keymap.set("n", "<leader>jpl", function()
-      require("dap").configurations.java = dap_profiles.load(root_dir)
-      require("jdtls.dap").setup_dap_main_class_configs({
-        on_ready = function()
-          local configs = require("dap").configurations.java
-          dap_profiles.save(root_dir, configs)
-          vim.notify(string.format("Đã reload %d profile debug.", #configs), vim.log.levels.INFO)
-        end,
-      })
-    end, vim.tbl_extend("force", opts, { desc = "Debug profile: reload danh sách" }))
-
-    -- Lưu danh sách profile debug hiện tại (đã sửa tay bằng <leader>dp thêm session, hoặc để
-    -- backup thủ công) xuống <project_root>/.nvim/dap-profiles.json.
-    vim.keymap.set("n", "<leader>jps", function()
-      dap_profiles.save(root_dir, require("dap").configurations.java or {})
-    end, vim.tbl_extend("force", opts, { desc = "Debug profile: lưu danh sách hiện tại" }))
-
-    -- Thêm 1 profile debug mới (nhập tay tên/args/vmArgs), main class gợi ý sẵn theo
-    -- package.class của file Java đang mở (vẫn sửa được nếu muốn trỏ tới class khác).
-    vim.keymap.set("n", "<leader>jpa", function()
-      dap_profiles.add("java", root_dir, {
-        mainClass = require("jdtls.util").resolve_classname(),
-        projectName = project_name,
-      })
-    end, vim.tbl_extend("force", opts, { desc = "Debug profile: thêm mới" }))
 
     -- Thêm profile debug từ CHÍNH file Java đang xem: tự dò "package ...;" + tên class trong
     -- buffer hiện tại (require("jdtls.util").resolve_classname(), giống cách jdtls tự xác định
@@ -296,21 +322,6 @@ local config = {
         projectName = project_name,
       })
     end, vim.tbl_extend("force", opts, { desc = "Debug profile: thêm từ file hiện tại" }))
-
-    -- Sửa 1 profile debug có sẵn (chọn từ danh sách), tự lưu lại xuống đĩa. Field nào profile
-    -- đang thiếu (vd chưa có mainClass/projectName) thì gợi ý sẵn theo file Java đang mở,
-    -- giống <leader>jpa, đỡ phải gõ tay lại từ đầu.
-    vim.keymap.set("n", "<leader>jpe", function()
-      dap_profiles.edit("java", root_dir, {
-        mainClass = require("jdtls.util").resolve_classname(),
-        projectName = project_name,
-      })
-    end, vim.tbl_extend("force", opts, { desc = "Debug profile: sửa" }))
-
-    -- Xoá 1 profile debug (chọn từ danh sách), tự lưu lại xuống đĩa.
-    vim.keymap.set("n", "<leader>jpd", function()
-      dap_profiles.delete("java", root_dir)
-    end, vim.tbl_extend("force", opts, { desc = "Debug profile: xoá" }))
 
     -- Đổi JDK dùng để compile/debug project hiện tại (giống Project SDK của IntelliJ)
     vim.keymap.set("n", "<leader>jv", function()

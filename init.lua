@@ -30,6 +30,25 @@ o.scrolloff = 8
 o.clipboard = "unnamedplus"
 o.cursorline = true
 
+-- ===== Auto-root: chỉ đổi cwd ĐÚNG 1 LẦN lúc khởi động, không đổi lại nữa =====
+-- Trước đây tự đổi cwd theo project của TỪNG file khi qua lại (BufEnter) để Telescope tìm đúng
+-- phạm vi - nhưng đổi liên tục theo buffer làm neo-tree/telescope "nhảy" loạn giữa các module
+-- (vd product-web <-> product-core). Giờ chỉ dò root 1 LẦN khi Neovim khởi động, dựa theo file
+-- đầu tiên được mở (nếu có) hoặc :pwd hiện tại, rồi CỐ ĐỊNH - dùng lệnh :cd tay nếu muốn đổi.
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    local path = vim.api.nvim_buf_get_name(0)
+    if path == "" or vim.bo.buftype ~= "" then return end
+    local root_markers = { ".git", "pom.xml", "build.gradle", "build.gradle.kts", "mvnw", "gradlew", "settings.gradle" }
+    local found = vim.fs.find(root_markers, { upward = true, path = vim.fs.dirname(path) })[1]
+    local root = found and vim.fs.dirname(found)
+    if root and root ~= vim.fn.getcwd() then
+      vim.fn.chdir(root)
+    end
+  end,
+})
+
 -- ===== Bootstrap lazy.nvim =====
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -78,6 +97,19 @@ map("n", "<leader>fr", "<cmd>Telescope oldfiles<CR>", { desc = "Recent files (Ct
 -- Show errors/warnings (Problems panel)
 map("n", "<leader>xx", "<cmd>TroubleToggle<CR>", { desc = "Toggle diagnostics list" })
 
+-- Copy Path (giống chuột phải > Copy Path/Copy Relative Path của IntelliJ). Vào thẳng clipboard
+-- hệ thống vì 'clipboard=unnamedplus' đã map thanh ghi mặc định "" sang "+ rồi.
+map("n", "<leader>cp", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify("Đã copy: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy Path (đường dẫn tuyệt đối)" })
+map("n", "<leader>cP", function()
+  local path = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
+  vim.fn.setreg("+", path)
+  vim.notify("Đã copy: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy Relative Path (từ project root)" })
+
 -- ===== Debug helpers (Java) =====
 
 -- Tìm profile Spring Boot có thật trong project (application-<profile>.yml/properties),
@@ -123,7 +155,14 @@ local function ensure_java_dap_configs(callback)
   vim.notify("Đang quét main class (jdtls)...", vim.log.levels.INFO)
   jdtls_dap.setup_dap_main_class_configs({
     on_ready = function()
-      callback(require("dap").configurations.java or {})
+      local found = require("dap").configurations.java or {}
+      -- Lưu ngay profile tự dò được xuống đĩa, để tắt/mở lại Neovim vẫn còn mà không cần
+      -- phải mở đúng file .java qua ftplugin (nơi vốn cũng tự lưu ở bước attach jdtls).
+      local root_dir = require("dap_profiles").resolve_root_dir()
+      if root_dir and #found > 0 then
+        require("dap_profiles").save(root_dir, found)
+      end
+      callback(found)
     end,
   })
 end
@@ -156,6 +195,33 @@ local function run_java_debug()
             if cwd == nil then return end
             if cwd ~= "" then cfg.cwd = cwd end
             _G._last_dap_run_cfg = cfg
+
+            -- Lưu luôn xuống <project_root>/.nvim/dap-profiles.json (giống IntelliJ tự cập nhật
+            -- Run Configuration mỗi lần Run), để tắt/mở lại Neovim vẫn còn - khác với chỉ giữ ở
+            -- _G._last_dap_run_cfg (mất khi restart Neovim).
+            local dap_profiles = require("dap_profiles")
+            local root_dir = dap_profiles.resolve_root_dir()
+            if root_dir then
+              local configs = dap.configurations.java or {}
+              local existing
+              for _, c in ipairs(configs) do
+                if c.name == cfg.name then
+                  existing = c
+                  break
+                end
+              end
+              if existing then
+                existing.mainClass = cfg.mainClass
+                existing.cwd = cfg.cwd
+                existing.vmArgs = cfg.vmArgs
+                existing.args = cfg.args
+              else
+                table.insert(configs, cfg)
+                dap.configurations.java = configs
+              end
+              dap_profiles.save(root_dir, dap.configurations.java)
+            end
+
             dap.run(cfg)
           end)
         end)

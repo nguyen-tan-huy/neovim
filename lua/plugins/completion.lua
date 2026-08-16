@@ -7,10 +7,14 @@ return {
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
     "rcarriga/cmp-dap",
+    "rafamadriz/friendly-snippets",
   },
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
+
+    -- Bộ snippet có sẵn (Java: psvm, sout, try/catch...) giống Live Templates của IntelliJ
+    require("luasnip.loaders.from_vscode").lazy_load()
 
     cmp.setup({
       snippet = {
@@ -37,6 +41,16 @@ return {
       sources = {
         { name = "dap" },
       },
+    })
+
+    -- Gợi ý tên bảng/cột khi gõ SQL trong DBUI, giống code completion của Database tool window
+    cmp.setup.filetype({ "sql", "mysql", "plsql" }, {
+      sources = cmp.config.sources({
+        { name = "vim-dadbod-completion" },
+        { name = "luasnip" },
+      }, {
+        { name = "buffer" },
+      }),
     })
   end,
 }

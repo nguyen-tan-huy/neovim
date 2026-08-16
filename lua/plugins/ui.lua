@@ -1,27 +1,14 @@
 return {
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "ellisonleao/gruvbox.nvim",
     priority = 1000,
     config = function()
-      require("catppuccin").setup({
-        flavour = "mocha", -- latte (sáng), frappe, macchiato, mocha (tối nhất)
-        transparent_background = false,
-        integrations = {
-          cmp = true,
-          gitsigns = true,
-          neotree = true,
-          telescope = true,
-          treesitter = true,
-          native_lsp = { enabled = true },
-          dap = true,
-          dap_ui = true,
-          which_key = true,
-          mason = true,
-          indent_blankline = { enabled = true },
-        },
+      require("gruvbox").setup({
+        contrast = "hard", -- "hard", "soft" hoặc "" (mặc định)
+        transparent_mode = false,
       })
-      vim.cmd.colorscheme("catppuccin")
+      vim.o.background = "dark"
+      vim.cmd.colorscheme("gruvbox")
     end,
   },
   {
@@ -34,10 +21,40 @@ return {
 		-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
 	},
 	config = function()
-		-- key map for neo tree
-		vim.keymap.set("n", "<leader>v", ":Neotree filesystem reveal right<CR>", {})
-		vim.keymap.set("n", "<leader>vx", ":Neotree filesystem close <CR>", {})
-	end,
+			-- Neovim mặc định tự chia lại TẤT CẢ cửa sổ cho bằng nhau mỗi khi mở/đóng 1 split
+			-- (option 'equalalways') - đây là nguyên nhân chính khiến neo-tree bị giãn to ra
+			-- lộn xộn dù đã set width cố định, vì 'winfixwidth' của neo-tree cũng không chặn
+			-- được hành vi này trong mọi trường hợp (vd đóng 1 split khác). Tắt hẳn để mọi split
+			-- (kể cả code) giữ nguyên kích thước đang có, không bị auto-resize theo nhau.
+			vim.o.equalalways = false
+
+			require("neo-tree").setup({
+				window = {
+					width = 30,
+					-- Không cho nội dung (tên file dài) tự đẩy rộng cửa sổ ra
+					auto_expand_width = false,
+				},
+				filesystem = {
+					-- Mặc định neo-tree tự đổi root theo :pwd (bind_to_cwd = true). Từ khi có
+					-- auto-root ở init.lua (tự cd sang đúng module Maven của file đang mở, để
+					-- Telescope tìm đúng phạm vi), :pwd đổi liên tục mỗi khi qua lại giữa
+					-- product-web/product-core -> kéo theo neo-tree cũng đổi root loạn theo.
+					-- Tắt để neo-tree đứng yên, chỉ đổi root khi tự tay bấm (vd phím "cd" trong
+					-- cây) hoặc gọi lại ":Neotree reveal".
+					bind_to_cwd = false,
+					filtered_items = {
+						hide_dotfiles = false,
+						hide_gitignored = false,
+					},
+					window = {
+						width = 30,
+					},
+				},
+			})
+			-- key map for neo tree
+			vim.keymap.set("n", "<leader>v", ":Neotree filesystem reveal right<CR>", {})
+			vim.keymap.set("n", "<leader>vx", ":Neotree filesystem close <CR>", {})
+		end,
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -72,6 +89,35 @@ return {
     version = "*",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
+      local function url_decode(s)
+        return (s:gsub("%%(%x%x)", function(h) return string.char(tonumber(h, 16)) end))
+      end
+
+      -- File mở từ .class trong jar (gd/references vào lib) có buffer name dạng URI
+      -- "jdt://contents/<jar hoặc project ref>/<package>/<Class>.class?<query>" - đặt tên tab
+      -- MẶC ĐỊNH của bufferline (basename) ra cả URI encode dài dòng, khó đọc (vd
+      -- "%3Cvn.longvan.crm..."). Tự parse ra tên class + tên lib kèm version, giống IntelliJ
+      -- hiện "ClassName (library-1.2.3.jar)" ở tab khi mở file decompile từ dependency.
+      local function jdt_class_tab_name(path)
+        if not path or not path:match("^jdt://") then return nil end
+        local jar, _pkg, classfile = path:match("contents/([^/]+)/([%a%d._%-]+)/([^?]+)")
+        if not classfile then
+          jar, classfile = path:match("contents/([^/]+)/([^?]+)")
+        end
+        if not classfile then return nil end
+        classfile = url_decode(classfile):gsub("%.class$", ""):gsub("%.java$", "")
+        local class_name = classfile:match("([^/]+)$") or classfile
+        if not jar then return class_name end
+        local lib_label = url_decode(jar):gsub("^<", ""):gsub(">$", "")
+        -- Rút gọn dạng "maven:groupId:artifactId:version" -> "artifactId:version"
+        local parts = {}
+        for p in lib_label:gmatch("[^:]+") do table.insert(parts, p) end
+        if #parts >= 2 then
+          lib_label = parts[#parts - 1] .. ":" .. parts[#parts]
+        end
+        return class_name .. "  [" .. lib_label .. "]"
+      end
+
       require("bufferline").setup({
         options = {
           mode = "buffers",
@@ -81,6 +127,7 @@ return {
           show_tab_indicators = false,
           diagnostics = "nvim_lsp",
           separator_style = "slant",
+          name_formatter = function(buf) return jdt_class_tab_name(buf.path) end,
         },
       })
       vim.keymap.set("n", "<A-Left>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
@@ -91,6 +138,16 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     config = function() require("gitsigns").setup({}) end,
+  },
+  {
+    "sindrets/diffview.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+    keys = {
+      { "<leader>gd", "<cmd>DiffviewOpen<CR>", desc = "Git: visual diff" },
+      { "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", desc = "Git: local history của file" },
+      { "<leader>gc", "<cmd>DiffviewClose<CR>", desc = "Git: đóng diffview" },
+    },
   },
   {
     "folke/trouble.nvim",
@@ -110,6 +167,30 @@ return {
         direction = "horizontal",
         start_in_insert = true,
       })
+
+      -- Chạy mvn theo đúng pom.xml gần nhất tính từ file đang mở (thư mục hiện tại/module
+      -- con), KHÔNG phải root reactor - để build đúng module đang đứng thay vì build lại
+      -- hết cả project. Đi ngược thư mục lên tới khi gặp pom.xml đầu tiên.
+      local function nearest_pom_dir()
+        local start = vim.fn.expand("%:p:h")
+        if start == "" then start = vim.fn.getcwd() end
+        local found = vim.fs.find("pom.xml", { path = start, upward = true })[1]
+        return found and vim.fn.fnamemodify(found, ":h") or nil
+      end
+
+      vim.keymap.set("n", "<leader>mb", function()
+        local dir = nearest_pom_dir()
+        if not dir then
+          vim.notify("Không tìm thấy pom.xml từ thư mục hiện tại trở lên.", vim.log.levels.WARN)
+          return
+        end
+        vim.ui.input({ prompt = "mvn goal (tại " .. dir .. "): ", default = "clean install -DskipTests" }, function(goal)
+          if not goal or goal == "" then return end
+          require("toggleterm.terminal").Terminal
+            :new({ cmd = "mvn " .. goal, dir = dir, close_on_exit = false })
+            :toggle()
+        end)
+      end, { desc = "Maven: build theo pom.xml gần nhất" })
     end,
   },
   {

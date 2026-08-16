@@ -12,8 +12,49 @@ local ENV_SUGGESTIONS = {
   "# LOG_LEVEL=debug",
 }
 
+-- Field nào của profile được sửa qua khối "key=value" đầu panel (khác biến môi trường ở dưới).
+local KNOWN_FIELDS = { "mainClass", "cwd", "vmArgs", "args" }
+
 local function profiles_path(root_dir)
   return root_dir .. "/.nvim/dap-profiles.json"
+end
+
+-- Marker dùng để dò project root khi chưa có buffer Java nào được jdtls attach trong session,
+-- giống danh sách marker ở ftplugin/java.lua.
+local ROOT_MARKERS = { "mvnw", "gradlew", "settings.gradle", "settings.gradle.kts", "pom.xml", "build.gradle", ".git" }
+
+--- Xác định root_dir của project hiện tại KHÔNG phụ thuộc buffer đang focus có phải file Java
+--- hay không - để các thao tác quản lý profile (jpl/jps/jpa/jpe/jpd, <leader>dp) dùng được ở
+--- bất kỳ buffer nào trong project, không chỉ khi đứng đúng trong 1 file .java.
+---@return string?
+function M.resolve_root_dir()
+  if vim.g.dap_profiles_last_root_dir then
+    return vim.g.dap_profiles_last_root_dir
+  end
+  -- Dò ngược từ đường dẫn buffer ĐANG MỞ trước (không phải getcwd()) - bắt buộc với reactor
+  -- Maven nhiều module (mỗi module có mvnw/pom.xml riêng, module cha chỉ có .git): dò từ getcwd()
+  -- khi mở Neovim ngay tại thư mục reactor cha sẽ ăn nhầm marker ".git" của module cha thay vì
+  -- mvnw của đúng module đang làm việc, khiến profile lưu sai chỗ so với nơi jdtls tự lưu sau này.
+  local buf_name = vim.api.nvim_buf_get_name(0)
+  local search_path = buf_name ~= "" and vim.fs.dirname(buf_name) or vim.fn.getcwd()
+  local found = vim.fs.find(ROOT_MARKERS, { upward = true, path = search_path })[1]
+  if found then
+    return vim.fs.dirname(found)
+  end
+  vim.notify(
+    "Không xác định được project root cho debug profile. Mở tạm 1 file .java hoặc cd vào đúng thư mục project.",
+    vim.log.levels.WARN)
+  return nil
+end
+
+--- Nạp profile từ đĩa vào dap.configurations.java nếu chưa có sẵn trong bộ nhớ (vd session
+--- chưa từng mở qua file .java nào).
+---@param root_dir string
+function M.ensure_loaded(root_dir)
+  local dap = require("dap")
+  if not dap.configurations.java or #dap.configurations.java == 0 then
+    dap.configurations.java = M.load(root_dir)
+  end
 end
 
 --- Đọc danh sách profile đã lưu của project.
@@ -48,36 +89,54 @@ function M.save(root_dir, profiles)
     vim.log.levels.INFO)
 end
 
---- Mở 1 cửa sổ nổi để xem/sửa biến môi trường của profile, dạng KEY=VALUE mỗi dòng.
---- Nếu profile đã có biến môi trường thì hiện đúng những gì đang có; nếu chưa có gì thì
---- hiện sẵn vài dòng gợi ý (comment, không bật) để người dùng biết định dạng và tên biến hay dùng.
----@param current_env table<string, string>?
----@param on_done fun(env: table<string, string>?) gọi lại khi đóng, env = nil nếu huỷ (không đổi gì)
-local function edit_env(current_env, on_done)
-  local lines
-  if current_env and next(current_env) then
-    lines = {}
-    local keys = vim.tbl_keys(current_env)
+--- Mở 1 cửa sổ nổi DUY NHẤT để sửa toàn bộ thông tin của profile: tên (tuỳ chọn), main class,
+--- working directory, VM args, program args và biến môi trường - thay vì hỏi từng field riêng
+--- lẻ qua nhiều popup vim.ui.input nối tiếp nhau.
+---@param profile table giá trị hiện có: { name?, mainClass?, cwd?, vmArgs?, args?, env? }
+---@param opts table? { include_name?: boolean = hiện thêm dòng "name=", default_cwd?: string = gợi ý cwd khi profile chưa có }
+---@param on_done fun(result: table?) result = nil nếu huỷ (không đổi gì); ngược lại là
+---  { name?, mainClass?, cwd?, vmArgs?, args?, env: table<string,string> } - field nào để trống
+---  trên panel thì trả về nil (env luôn là 1 table, có thể rỗng nếu người dùng xoá hết)
+local function edit_profile(profile, opts, on_done)
+  opts = opts or {}
+  profile = profile or {}
+
+  local lines = {
+    "# Sửa thông tin profile (:w lưu, q hoặc <Esc> huỷ). Để trống field nghĩa là bỏ field đó.",
+  }
+  if opts.include_name then
+    table.insert(lines, "name=" .. (profile.name or ""))
+  end
+  table.insert(lines, "mainClass=" .. (profile.mainClass or ""))
+  table.insert(lines, "cwd=" .. (profile.cwd or opts.default_cwd or ""))
+  table.insert(lines, "vmArgs=" .. (profile.vmArgs or ""))
+  table.insert(lines, "args=" .. (profile.args or ""))
+  table.insert(lines, "#")
+  table.insert(lines, "# Biến môi trường cho profile này, mỗi dòng 1 biến dạng KEY=VALUE.")
+  table.insert(lines, "# Dòng bắt đầu bằng # bị bỏ qua.")
+  if profile.env and next(profile.env) then
+    local keys = vim.tbl_keys(profile.env)
     table.sort(keys)
     for _, k in ipairs(keys) do
-      table.insert(lines, k .. "=" .. tostring(current_env[k]))
+      table.insert(lines, k .. "=" .. tostring(profile.env[k]))
     end
   else
-    lines = vim.list_extend({
-      "# Biến môi trường cho profile này, mỗi dòng 1 biến dạng KEY=VALUE.",
-      "# Dòng bắt đầu bằng # bị bỏ qua. Xoá dấu # để bật gợi ý bên dưới, hoặc tự thêm dòng mới.",
-    }, ENV_SUGGESTIONS)
+    vim.list_extend(lines, ENV_SUGGESTIONS)
   end
+
+  local known = {}
+  for _, f in ipairs(KNOWN_FIELDS) do known[f] = true end
+  if opts.include_name then known.name = true end
 
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].filetype = "sh"
   vim.bo[buf].buftype = "acwrite"
   vim.bo[buf].bufhidden = "wipe"
-  vim.api.nvim_buf_set_name(buf, "dap-profile-env://" .. buf)
+  vim.api.nvim_buf_set_name(buf, "dap-profile://" .. buf)
 
-  local width = math.min(80, math.floor(vim.o.columns * 0.6))
-  local height = math.max(#lines + 1, 6)
+  local width = math.min(90, math.floor(vim.o.columns * 0.6))
+  local height = math.max(#lines + 1, 12)
   local win = vim.api.nvim_open_win(buf, true, {
     relative = "editor",
     width = width,
@@ -85,7 +144,7 @@ local function edit_env(current_env, on_done)
     row = math.floor((vim.o.lines - height) / 2),
     col = math.floor((vim.o.columns - width) / 2),
     border = "rounded",
-    title = " Env vars (:w lưu, :q / q huỷ) ",
+    title = " Debug profile (:w lưu, q huỷ) ",
     title_pos = "center",
   })
 
@@ -93,19 +152,25 @@ local function edit_env(current_env, on_done)
   local function finish(save)
     if done then return end
     done = true
-    local env = nil
+    local result = nil
     if save then
-      env = {}
+      result = { env = {} }
       for _, line in ipairs(vim.api.nvim_buf_get_lines(buf, 0, -1, false)) do
         local trimmed = vim.trim(line)
         if trimmed ~= "" and not vim.startswith(trimmed, "#") then
           local key, value = trimmed:match("^([%w_][%w_%.]*)=(.*)$")
-          if key then env[key] = value end
+          if key then
+            if known[key] then
+              result[key] = value ~= "" and value or nil
+            else
+              result.env[key] = value
+            end
+          end
         end
       end
     end
     if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
-    on_done(env)
+    on_done(result)
   end
 
   vim.api.nvim_create_autocmd("BufWriteCmd", { buffer = buf, callback = function() finish(true) end })
@@ -113,51 +178,42 @@ local function edit_env(current_env, on_done)
   vim.keymap.set("n", "<Esc>", function() finish(false) end, { buffer = buf, nowait = true })
 end
 
---- Thêm 1 profile mới (hỏi từng field qua vim.ui.input), rồi lưu lại luôn xuống đĩa.
+--- Thêm 1 profile mới qua panel sửa toàn bộ thông tin 1 lần, rồi lưu lại luôn xuống đĩa.
 ---@param filetype string
 ---@param root_dir string
 ---@param defaults table? giá trị mặc định gợi ý sẵn, vd { name = "...", mainClass = "...", projectName = "..." }
 function M.add(filetype, root_dir, defaults)
   defaults = defaults or {}
   local dap = require("dap")
-  vim.ui.input({ prompt = "Tên profile: ", default = defaults.name or "" }, function(name)
-    if not name or name == "" then return end
-    -- Main class gợi ý sẵn theo package của file đang mở (nếu có), vẫn sửa/xoá được nếu muốn
-    -- trỏ tới class khác.
-    vim.ui.input({ prompt = "Main class: ", default = defaults.mainClass or "" }, function(main_class)
-      if main_class == nil then return end
-      -- Working directory của tiến trình Java khi chạy. Gợi ý sẵn = root_dir (project gốc),
-      -- vì các profile jdtls tự dò cũng dùng đúng giá trị này - sửa nếu module con nằm khác chỗ.
-      vim.ui.input({ prompt = "Working directory: ", default = defaults.cwd or root_dir }, function(cwd)
-        if cwd == nil then return end
-        vim.ui.input({ prompt = "VM args (để trống nếu không có): " }, function(vm_args)
-          vim.ui.input({ prompt = "Program args (để trống nếu không có): " }, function(prog_args)
-            if prog_args == nil then return end
-            edit_env(nil, function(env)
-              local profile = {
-                type = "java",
-                request = "launch",
-                name = name,
-                mainClass = main_class,
-                projectName = defaults.projectName,
-                cwd = cwd ~= "" and cwd or nil,
-              }
-              if vm_args and vm_args ~= "" then profile.vmArgs = vm_args end
-              if prog_args and prog_args ~= "" then profile.args = prog_args end
-              if env and next(env) then profile.env = env end
+  edit_profile({
+    name = defaults.name,
+    mainClass = defaults.mainClass,
+    cwd = defaults.cwd or root_dir,
+  }, { include_name = true, default_cwd = root_dir }, function(result)
+    if not result then return end
+    if not result.name then
+      vim.notify("Tên profile không được để trống.", vim.log.levels.WARN)
+      return
+    end
+    local profile = {
+      type = "java",
+      request = "launch",
+      name = result.name,
+      mainClass = result.mainClass,
+      projectName = defaults.projectName,
+      cwd = result.cwd,
+      vmArgs = result.vmArgs,
+      args = result.args,
+    }
+    if next(result.env) then profile.env = result.env end
 
-              dap.configurations[filetype] = dap.configurations[filetype] or {}
-              table.insert(dap.configurations[filetype], profile)
-              M.save(root_dir, dap.configurations[filetype])
-            end)
-          end)
-        end)
-      end)
-    end)
+    dap.configurations[filetype] = dap.configurations[filetype] or {}
+    table.insert(dap.configurations[filetype], profile)
+    M.save(root_dir, dap.configurations[filetype])
   end)
 end
 
---- Sửa 1 profile có sẵn (chọn từ danh sách), rồi lưu lại xuống đĩa.
+--- Sửa 1 profile có sẵn (chọn từ danh sách) qua panel sửa toàn bộ thông tin 1 lần, rồi lưu lại xuống đĩa.
 ---@param filetype string
 ---@param root_dir string
 ---@param defaults table? giá trị gợi ý khi field của profile đang chọn CHƯA có sẵn (vd main
@@ -175,28 +231,21 @@ function M.edit(filetype, root_dir, defaults)
     format_item = function(c) return c.name end,
   }, function(choice)
     if not choice then return end
-    vim.ui.input({ prompt = "Main class: ", default = choice.mainClass or defaults.mainClass or "" },
-      function(main_class)
-      if main_class == nil then return end
-      vim.ui.input({ prompt = "Working directory: ", default = choice.cwd or defaults.cwd or root_dir },
-        function(cwd)
-        if cwd == nil then return end
-        vim.ui.input({ prompt = "VM args: ", default = choice.vmArgs or defaults.vmArgs or "" }, function(vm_args)
-          vim.ui.input({ prompt = "Program args: ", default = choice.args or defaults.args or "" }, function(prog_args)
-            if prog_args == nil then return end
-            -- Hiện đúng biến môi trường profile đang có; nếu chưa có gì thì hiện gợi ý.
-            edit_env(choice.env, function(env)
-              choice.mainClass = main_class ~= "" and main_class or nil
-              choice.cwd = cwd ~= "" and cwd or nil
-              choice.vmArgs = vm_args ~= "" and vm_args or nil
-              choice.args = prog_args ~= "" and prog_args or nil
-              choice.projectName = choice.projectName or defaults.projectName
-              if env then choice.env = next(env) and env or nil end
-              M.save(root_dir, configs)
-            end)
-          end)
-        end)
-      end)
+    edit_profile({
+      mainClass = choice.mainClass or defaults.mainClass,
+      cwd = choice.cwd or defaults.cwd,
+      vmArgs = choice.vmArgs,
+      args = choice.args,
+      env = choice.env,
+    }, { default_cwd = root_dir }, function(result)
+      if not result then return end
+      choice.mainClass = result.mainClass
+      choice.cwd = result.cwd
+      choice.vmArgs = result.vmArgs
+      choice.args = result.args
+      choice.projectName = choice.projectName or defaults.projectName
+      choice.env = next(result.env) and result.env or nil
+      M.save(root_dir, configs)
     end)
   end)
 end
@@ -222,8 +271,19 @@ function M.delete(filetype, root_dir)
   end)
 end
 
--- Expose để chỗ khác (vd chạy 1 profile mới song song) tái dùng đúng popup sửa env này,
--- không cần đi kèm luồng thêm/sửa profile lưu xuống đĩa.
-M.edit_env = edit_env
+--- Sửa main class/working directory/VM args/program args/env của 1 profile trước khi chạy song
+--- song (xem <leader>dp trong dap.lua) - dùng đúng panel với M.add/M.edit. Việc lưu xuống đĩa
+--- do caller tự quyết định (xem <leader>dp: áp thẳng vào profile + gọi M.save sau khi có result).
+---@param profile table profile gốc (không bị sửa trực tiếp), lấy làm giá trị gợi ý ban đầu
+---@param on_done fun(result: table?) xem edit_profile - result = nil nếu huỷ
+function M.edit_overrides(profile, on_done)
+  edit_profile({
+    mainClass = profile.mainClass,
+    cwd = profile.cwd,
+    vmArgs = profile.vmArgs,
+    args = profile.args,
+    env = profile.env,
+  }, {}, on_done)
+end
 
 return M
