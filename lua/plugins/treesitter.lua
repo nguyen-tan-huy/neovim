@@ -12,7 +12,7 @@ return {
     end
 
     require("nvim-treesitter.configs").setup({
-      ensure_installed = { "java", "lua", "json", "yaml", "xml", "html", "markdown", "markdown_inline", "bash" },
+      ensure_installed = { "java", "rust", "toml", "lua", "json", "yaml", "xml", "html", "markdown", "markdown_inline", "bash" },
       highlight = { enable = true, disable = is_large_file },
       indent = { enable = true, disable = is_large_file },
       fold = { enable = true },
@@ -25,7 +25,8 @@ return {
     -- Dùng foldexpr native của Neovim (nhanh hơn nhiều so với nvim_treesitter#foldexpr() bản
     -- Vimscript cũ) - đây là nguyên nhân chính gây đơ khi mở file lớn.
     vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-    vim.opt.foldenable = false -- mở file không tự fold hết
+    -- foldenable/foldlevel(start)/foldcolumn được set ở fold.lua (nvim-ufo) - không set trùng
+    -- ở đây để tránh 2 nơi ghi đè lẫn nhau.
   end,
 }
 

@@ -13,16 +13,17 @@ return {
       require("mason-lspconfig").setup({
         -- "jdtls" chỉ để Mason tải về, KHÔNG để mason-lspconfig tự khởi động (jdtls cần
         -- start_or_attach thủ công theo từng project, xem ftplugin/java.lua)
-        ensure_installed = { "lua_ls", "lemminx", "jdtls" },
+        ensure_installed = { "lua_ls", "lemminx", "jdtls", "rust_analyzer" },
         -- CHẶN mason-lspconfig tự bật LSP server → tránh xung đột với nvim-jdtls
         automatic_enable = false,
       })
 
-      -- Cài thêm qua Mason: java-debug-adapter (DAP) + java-test (JUnit/TestNG runner),
-      -- không phải LSP server nên mason-lspconfig không tự tải, phải gọi registry trực tiếp.
+      -- Cài thêm qua Mason: java-debug-adapter/java-test (DAP + JUnit runner cho Java) và
+      -- codelldb (DAP cho Rust, xem dap.lua) - không phải LSP server nên mason-lspconfig
+      -- không tự tải, phải gọi registry trực tiếp.
       local ok_registry, registry = pcall(require, "mason-registry")
       if ok_registry then
-        for _, name in ipairs({ "java-debug-adapter", "java-test" }) do
+        for _, name in ipairs({ "java-debug-adapter", "java-test", "codelldb" }) do
           local ok_pkg, pkg = pcall(registry.get_package, name)
           if ok_pkg and not pkg:is_installed() then
             vim.notify("Đang cài " .. name .. " qua Mason...", vim.log.levels.INFO)
@@ -47,6 +48,28 @@ return {
         filetypes = { "xml", "xhtml" },
       })
       vim.lsp.enable("lemminx")
+
+      -- rust-analyzer: bật check bằng clippy (nhiều gợi ý hơn cargo check mặc định), giống
+      -- IntelliJ-Rust mặc định bật Clippy trong External Linters.
+      vim.lsp.config("rust_analyzer", {
+        capabilities = capabilities,
+        settings = {
+          ["rust-analyzer"] = {
+            check = { command = "clippy" },
+          },
+        },
+      })
+      vim.lsp.enable("rust_analyzer")
+
+      -- Format .xhtml/.xml qua lemminx (chỉ reformat khoảng trắng/thụt lề của thẻ, không đụng
+      -- vào nội dung bên trong attribute value nên EL expression #{bean.action} vẫn giữ nguyên)
+      -- và .rs qua rust-analyzer (rustfmt) - auto-format khi lưu để khỏi phải nhớ gọi tay.
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = { "*.xhtml", "*.xml", "*.rs" },
+        callback = function(args)
+          vim.lsp.buf.format({ bufnr = args.buf, async = false, timeout_ms = 3000 })
+        end,
+      })
 
       -- Keymap LSP dùng chung cho mọi ngôn ngữ (Java sẽ nhận qua jdtls.lua)
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -103,6 +126,7 @@ return {
           map("n", "K", vim.lsp.buf.hover, "Hover doc")
           map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
           map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+          map("n", "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "Format buffer")
           map("n", "<leader>e", vim.diagnostic.open_float, "Show diagnostic")
           map("n", "[d", vim.diagnostic.goto_prev, "Previous diagnostic")
           map("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")

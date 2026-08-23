@@ -168,17 +168,135 @@ return {
     -- ngay statusline (mục 🐛 ở lualine) thay vì đợi lualine tự làm mới theo chu kỳ.
     local function on_session_ended(session)
       vim.schedule(function()
-        vim.cmd("redrawstatus")
         if session and session.config then
+          dap_status.launching[session.config.name] = nil
           vim.notify("Đã tắt session debug: " .. session.config.name, vim.log.levels.INFO)
         end
+        vim.cmd("redrawstatus")
       end)
     end
     dap.listeners.after.event_terminated["status_notify"] = on_session_ended
     dap.listeners.after.event_exited["status_notify"] = on_session_ended
-    dap.listeners.after.event_initialized["status_notify"] = function()
-      vim.schedule(function() vim.cmd("redrawstatus") end)
+    dap.listeners.after.event_initialized["status_notify"] = function(session)
+      vim.schedule(function()
+        if session and session.config then
+          dap_status.launching[session.config.name] = nil
+        end
+        vim.cmd("redrawstatus")
+      end)
     end
+
+    -- Nhớ PID thật của JVM debuggee, phòng khi DAP event "process" (body.systemProcessId) có
+    -- gửi - nhưng ĐÃ KIỂM TRA log TRACE (~/.local/state/nvim/dap.log): java-debug adapter của
+    -- jdtls KHÔNG BAO GIỜ gửi event này, nên dict này thực tế luôn rỗng với Java. Giữ lại phòng
+    -- adapter khác (vd node debug) có gửi thật.
+    dap.listeners.after.event_process["status_notify"] = function(session, body)
+      if session and session.config and body and body.systemProcessId then
+        dap_status.pids[session.config.name] = body.systemProcessId
+      end
+    end
+
+    --- Tra PID đang LISTEN 1 port TCP bằng lsof (đã cài sẵn, xem `command -v lsof`). Trả về
+    --- mảng số PID (thường 1 phần tử, có thể rỗng nếu port đã đóng hoặc process không sở hữu bởi
+    --- user hiện tại).
+    local function pids_listening_on_port(port)
+      if vim.fn.executable("lsof") == 0 then return {} end
+      local out = vim.fn.systemlist({ "lsof", "-ti", ":" .. tostring(port) })
+      local pids = {}
+      for _, line in ipairs(out) do
+        local pid = tonumber(vim.trim(line))
+        if pid then table.insert(pids, pid) end
+      end
+      return pids
+    end
+
+    --- Poll mỗi 500ms (tối đa 5s) xem process cũ (PID từ event "process" nếu có + PID đang
+    --- LISTEN port đã bắt được từ log) đã thoát thật chưa, rồi mới gọi cb(). ĐÃ XÁC NHẬN qua log
+    --- TRACE (~/.local/state/nvim/dap.log): java-debug trả lời disconnect(terminateDebuggee=true)
+    --- là success=true, bắn event "terminated", nhưng JVM thật KHÔNG thoát (bug/giới hạn của
+    --- adapter, không phải do config này) - và adapter cũng không gửi event "process" nên không
+    --- có PID trực tiếp. Vì vậy PHẢI tự tra PID qua port bằng lsof, giống hệt cách tự tay tìm &
+    --- kill. Hết 5s vẫn còn sống thì SIGKILL thẳng trước khi gọi cb() - bắt buộc phải đợi port
+    --- nhả ra thật rồi mới cho restart launch lại, không JVM mới sẽ bind lỗi "Address already
+    --- in use" vì JVM cũ vẫn còn giữ port.
+    local function wait_release_then(name, pid_from_event, port, cb)
+      if not pid_from_event and not port then
+        cb() -- không có manh mối gì để tra PID, tin theo DAP protocol là đã tắt
+        return
+      end
+      local uv = vim.uv or vim.loop
+      local elapsed = 0
+      local interval = 500
+      local max_wait = 5000
+      local function check()
+        local candidates = {}
+        if pid_from_event then candidates[pid_from_event] = true end
+        if port then
+          for _, pid in ipairs(pids_listening_on_port(port)) do candidates[pid] = true end
+        end
+        local alive = {}
+        for pid in pairs(candidates) do
+          if uv.kill(pid, 0) then table.insert(alive, pid) end -- signal 0: chỉ kiểm tra, không giết
+        end
+        if #alive == 0 then
+          dap_status.pids[name] = nil
+          dap_status.ports[name] = nil
+          cb()
+          return
+        end
+        elapsed = elapsed + interval
+        if elapsed >= max_wait then
+          table.sort(alive)
+          for _, pid in ipairs(alive) do uv.kill(pid, 9) end -- SIGKILL
+          dap_status.pids[name] = nil
+          dap_status.ports[name] = nil
+          vim.notify(
+            string.format("'%s' không tự tắt sau terminate - đã force-kill PID %s.",
+              name, table.concat(alive, ", ")),
+            vim.log.levels.WARN
+          )
+          cb()
+          return
+        end
+        vim.defer_fn(check, interval)
+      end
+      vim.defer_fn(check, interval)
+    end
+
+    --- Gọi dap.terminate() cho 1 session, rồi tự force-kill nếu process cũ không thoát (xem
+    --- wait_release_then).
+    local function terminate_with_fallback_kill(s)
+      local name = s.config.name
+      local pid_from_event = dap_status.pids[name]
+      local port = dap_status.ports[name]
+      dap.set_session(s) -- dap.terminate() chỉ tác động session đang focus, nên focus nó trước
+      dap.terminate()
+      wait_release_then(name, pid_from_event, port, function() end)
+    end
+
+    -- ===== Rust (codelldb, cài qua Mason - xem lsp.lua) =====
+    dap.adapters.codelldb = {
+      type = "server",
+      port = "${port}",
+      executable = {
+        command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
+        args = { "--port", "${port}" },
+      },
+    }
+    dap.configurations.rust = {
+      {
+        name = "Launch",
+        type = "codelldb",
+        request = "launch",
+        -- Hỏi tay đường dẫn binary vì cargo có thể build ra nhiều target (bin/example/test) -
+        -- gõ tab để autocomplete trong target/debug.
+        program = function()
+          return vim.fn.input("Đường dẫn binary debug: ", vim.fn.getcwd() .. "/target/debug/", "file")
+        end,
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+      },
+    }
 
     -- Scheme phím debug giống IntelliJ
     vim.keymap.set("n", "<F8>", function() dap.step_over() end, { desc = "Step over" })
@@ -208,9 +326,28 @@ return {
       end)
     end, { desc = "Debug: hot reload code (redefineClasses)" })
 
-    -- Restart session hiện tại (đang focus), giữ nguyên config: nếu adapter hỗ trợ "restart"
-    -- request thì restart tại chỗ, không thì tự fallback terminate + chạy lại từ đầu.
-    vim.keymap.set("n", "<leader>dR", function() dap.restart() end, { desc = "Debug: restart session hiện tại" })
+    -- Restart session hiện tại (đang focus), giữ nguyên config. KHÔNG dùng dap.restart() mặc
+    -- định: java-debug không hỗ trợ "restart" request (supportsRestartRequest=false) nên nó tự
+    -- fallback terminate + chạy lại NGAY sau khi disconnect "success" - dính đúng bug ở
+    -- terminate_with_fallback_kill (JVM cũ chưa thoát thật), nên JVM mới launch lại có thể bind
+    -- lỗi "Address already in use" vì JVM cũ vẫn giữ port, hoặc tệ hơn là chạy chồng 2 tiến
+    -- trình. Ở đây tự terminate rồi ĐỢI port nhả ra hẳn (force-kill nếu cần) mới launch lại.
+    vim.keymap.set("n", "<leader>dR", function()
+      local s = dap.session()
+      if not s then
+        vim.notify("Không có debug session đang chạy.", vim.log.levels.WARN)
+        return
+      end
+      local config = s.config
+      local name = config.name
+      local pid_from_event = dap_status.pids[name]
+      local port = dap_status.ports[name]
+      vim.notify("Đang restart '" .. name .. "'...", vim.log.levels.INFO)
+      dap.terminate()
+      wait_release_then(name, pid_from_event, port, function()
+        dap.run(config, { new = true })
+      end)
+    end, { desc = "Debug: restart session hiện tại" })
 
     -- Chạy thêm 1 profile debug mới SONG SONG với session đang chạy (không tắt session cũ),
     -- giống chạy nhiều Run/Debug Configuration cùng lúc của IntelliJ. Sửa main class/working
@@ -240,6 +377,20 @@ return {
             choice.env = next(result.env) and result.env or nil
             require("dap_profiles").save(root_dir, configs)
           end
+          -- Đánh dấu "đang khởi động" ngay để statusline (🐛 ở lualine) hiện lên liền, không đợi
+          -- session initialized xong mới biết - JVM start mất vài giây, không có dấu hiệu gì
+          -- trong lúc đó thì dễ tưởng bấm không ăn. Timeout 30s để tự gỡ nếu launch treo/lỗi mà
+          -- không bắn event_terminated/exited nào (vd sai adapter, JDWP không kết nối được).
+          dap_status.launching[choice.name] = true
+          vim.cmd("redrawstatus")
+          vim.defer_fn(function()
+            if dap_status.launching[choice.name] then
+              dap_status.launching[choice.name] = nil
+              vim.notify("Vẫn chưa thấy '" .. choice.name .. "' khởi động xong sau 30s - có thể launch đã treo/lỗi.",
+                vim.log.levels.WARN)
+              vim.cmd("redrawstatus")
+            end
+          end, 30000)
           dap.run(choice, { new = true }) -- new = true: luôn tạo session mới, không đụng session đang chạy
         end)
       end)
@@ -347,14 +498,16 @@ return {
         format_item = function(s) return s.config.name .. " #" .. s.id end,
       }, function(choice)
         if not choice then return end
-        dap.set_session(choice) -- dap.terminate() chỉ tác động session đang focus, nên focus nó trước
-        dap.terminate()
+        terminate_with_fallback_kill(choice)
       end)
     end, { desc = "Debug: tắt 1 session theo profile" })
 
     -- Tắt toàn bộ session debug đang chạy song song.
-    vim.keymap.set("n", "<leader>dX", function() dap.terminate({ all = true }) end,
-      { desc = "Debug: tắt tất cả session debug" })
+    vim.keymap.set("n", "<leader>dX", function()
+      for _, s in pairs(dap.sessions()) do
+        terminate_with_fallback_kill(s)
+      end
+    end, { desc = "Debug: tắt tất cả session debug" })
 
     -- Evaluate nhanh (popup nổi): dòng lệnh dưới cursor (normal) hoặc vùng chọn (visual)
     vim.keymap.set({ "n", "x" }, "<leader>de", function() dapui.eval() end, { desc = "Debug: evaluate expression dưới cursor" })

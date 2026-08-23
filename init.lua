@@ -263,6 +263,12 @@ map("n", "<F5>", function()
     dap.continue()
     return
   end
+  if vim.bo.filetype ~= "java" then
+    -- Rust (và các filetype khác có dap.configurations riêng): dùng thẳng dap.continue(),
+    -- nvim-dap tự hỏi chọn config nếu có nhiều configuration cho filetype đó.
+    dap.continue()
+    return
+  end
   if _G._last_dap_run_cfg then
     dap.run(_G._last_dap_run_cfg)
     return

@@ -73,8 +73,20 @@ return {
           if port then nm = nm .. ":" .. port end
           table.insert(names, nm)
         end
-        if #names == 0 then return "" end
-        return "🐛 " .. table.concat(names, ", ")
+        local parts = {}
+        if #names > 0 then table.insert(parts, "🐛 " .. table.concat(names, ", ")) end
+
+        -- Profile đã bấm <leader>dp nhưng chưa initialized xong (xem dap.lua) - hiện riêng để
+        -- biết đang khởi động, khỏi tưởng nhầm bấm không ăn vì JVM start hơi mất thời gian.
+        if ok_status then
+          local launching = {}
+          for name in pairs(dap_status_mod.launching) do table.insert(launching, name) end
+          if #launching > 0 then
+            table.sort(launching)
+            table.insert(parts, "⏳ " .. table.concat(launching, ", "))
+          end
+        end
+        return table.concat(parts, " ")
       end
 
       require("lualine").setup({
