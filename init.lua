@@ -111,152 +111,14 @@ map("n", "<leader>cP", function()
 end, { desc = "Copy Relative Path (từ project root)" })
 
 -- ===== Debug helpers (Java) =====
-
--- Tìm profile Spring Boot có thật trong project (application-<profile>.yml/properties),
--- fallback về danh sách mặc định nếu không tìm thấy file nào.
-local function detect_spring_profiles()
-  local patterns = {
-    "**/src/main/resources/application-*.yml",
-    "**/src/main/resources/application-*.yaml",
-    "**/src/main/resources/application-*.properties",
-  }
-  local seen, profiles = {}, {}
-  for _, pat in ipairs(patterns) do
-    for _, f in ipairs(vim.fn.globpath(vim.fn.getcwd(), pat, false, true)) do
-      local name = f:match("application%-([%w%-_]+)%.%a+$")
-      if name and not seen[name] then
-        seen[name] = true
-        table.insert(profiles, name)
-      end
-    end
-  end
-  table.insert(profiles, "custom")
-  if #profiles == 1 then
-    return { "dev", "prod", "staging", "custom" }
-  end
-  return profiles
-end
-
--- Đảm bảo dap.configurations.java đã được populate (main class detection qua jdtls.dap).
--- jdtls.dap.setup_dap_main_class_configs tự dedupe theo (name, cwd) và có callback on_ready,
--- không cần tự polling như trước.
-local function ensure_java_dap_configs(callback)
-  local dap = require("dap")
-  local configs = dap.configurations.java or {}
-  if #configs > 0 then
-    callback(configs)
-    return
-  end
-  local ok, jdtls_dap = pcall(require, "jdtls.dap")
-  if not ok then
-    callback({})
-    return
-  end
-  vim.notify("Đang quét main class (jdtls)...", vim.log.levels.INFO)
-  jdtls_dap.setup_dap_main_class_configs({
-    on_ready = function()
-      local found = require("dap").configurations.java or {}
-      -- Lưu ngay profile tự dò được xuống đĩa, để tắt/mở lại Neovim vẫn còn mà không cần
-      -- phải mở đúng file .java qua ftplugin (nơi vốn cũng tự lưu ở bước attach jdtls).
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if root_dir and #found > 0 then
-        require("dap_profiles").save(root_dir, found)
-      end
-      callback(found)
-    end,
-  })
-end
-
--- IntelliJ-style Run/Debug: chọn config -> chọn Spring profile -> VM args -> program args -> working dir
-local function run_java_debug()
-  local dap = require("dap")
-
-  local function launch(cfg)
-    local profiles = detect_spring_profiles()
-    vim.ui.select(profiles, { prompt = "Spring profile:" }, function(profile)
-      if not profile then return end
-      local baseVmArgs = cfg.vmArgs or ""
-      if profile ~= "custom" then
-        baseVmArgs = (baseVmArgs ~= "" and baseVmArgs .. " " or "") .. "-Dspring.profiles.active=" .. profile
-      end
-
-      vim.ui.input({ prompt = "Extra VM args (vd: -Xmx1g -Dport=8080):", default = baseVmArgs }, function(vmArgs)
-        if vmArgs == nil then return end
-        cfg.vmArgs = vmArgs
-
-        vim.ui.input({ prompt = "Program args (vd: --server.port=9090):", default = cfg.args or "" }, function(args)
-          if args == nil then return end
-          cfg.args = args
-
-          vim.ui.input({
-            prompt = "Working dir (Enter = project root):",
-            default = cfg.cwd or vim.fn.getcwd(),
-          }, function(cwd)
-            if cwd == nil then return end
-            if cwd ~= "" then cfg.cwd = cwd end
-            _G._last_dap_run_cfg = cfg
-
-            -- Lưu luôn xuống <project_root>/.nvim/dap-profiles.json (giống IntelliJ tự cập nhật
-            -- Run Configuration mỗi lần Run), để tắt/mở lại Neovim vẫn còn - khác với chỉ giữ ở
-            -- _G._last_dap_run_cfg (mất khi restart Neovim).
-            local dap_profiles = require("dap_profiles")
-            local root_dir = dap_profiles.resolve_root_dir()
-            if root_dir then
-              local configs = dap.configurations.java or {}
-              local existing
-              for _, c in ipairs(configs) do
-                if c.name == cfg.name then
-                  existing = c
-                  break
-                end
-              end
-              if existing then
-                existing.mainClass = cfg.mainClass
-                existing.cwd = cfg.cwd
-                existing.vmArgs = cfg.vmArgs
-                existing.args = cfg.args
-              else
-                table.insert(configs, cfg)
-                dap.configurations.java = configs
-              end
-              dap_profiles.save(root_dir, dap.configurations.java)
-            end
-
-            dap.run(cfg)
-          end)
-        end)
-      end)
-    end)
-  end
-
-  ensure_java_dap_configs(function(configs)
-    if #configs == 0 then
-      vim.ui.input({
-        prompt = "Không tìm thấy main class. Nhập tay (vd: com.example.Application, Enter=bỏ):",
-      }, function(main)
-        if not main or main == "" then return end
-        launch({ type = "java", request = "launch", name = main, mainClass = main })
-      end)
-      return
-    end
-
-    if #configs == 1 then
-      launch(vim.deepcopy(configs[1]))
-      return
-    end
-
-    vim.ui.select(configs, {
-      prompt = "Select config to run:",
-      format_item = function(c) return c.name end,
-    }, function(choice)
-      if not choice then return end
-      launch(vim.deepcopy(choice))
-    end)
-  end)
-end
-
--- Run/Debug (giống Shift+F10): nếu đang debug thì continue, nếu không thì chạy lại config gần nhất,
--- lần đầu chưa có config nào thì mở wizard chọn config/profile/cwd.
+-- Config Java (main class, VM args, program args, working dir, profile Maven) giờ do
+-- java-debug-model quản lý hẳn (:JavaDebugConfigAdd/:JavaDebugConfigEdit/:JavaDebugConfigScan/
+-- :JavaDebugConfigFromFile/:JavaDebugConfigRun) - cơ chế cũ ở đây (tự dò main class qua
+-- nvim-jdtls + lưu vào lua/dap_profiles.lua) đã bỏ hẳn (file đó đã xoá): nó không đi qua
+-- jdtls_bridge.resolve_classpath/resolve_sourcepaths của java-debug-model nên bước vào code của
+-- 1 module khác trong CÙNG project (sibling module, kể cả module không khai báo <module> trong
+-- pom cha - vd product-web phụ thuộc product-core nhưng product-core không phải <module> của
+-- product-web) luôn ra decompile từ .m2 jar thay vì nhảy thẳng vào source thật.
 map("n", "<F5>", function()
   local dap = require("dap")
   if dap.session() then
@@ -269,53 +131,62 @@ map("n", "<F5>", function()
     dap.continue()
     return
   end
-  if _G._last_dap_run_cfg then
-    dap.run(_G._last_dap_run_cfg)
+  local jdm = require("java-debug-model")
+  local root = jdm._find_root(0)
+  if not root then
+    vim.notify("java-debug-model: không tìm thấy project root (pom.xml) cho file này.", vim.log.levels.WARN)
     return
   end
-  run_java_debug()
-end, { desc = "Debug: continue / run last config" })
-
--- Chạy nhanh main class của file hiện tại, không hỏi profile/cwd (giống Ctrl+Shift+F10)
-map("n", "<leader>jr", function()
-  local bufnr = vim.api.nvim_get_current_buf()
-  ensure_java_dap_configs(function(configs)
-    if #configs == 0 then
-      vim.notify("Không tìm thấy main class trong project. jdtls có thể chưa import xong, hoặc project chưa được nhận diện đúng (kiểm tra :LspInfo).",
-        vim.log.levels.WARN)
-      return
-    end
-
-    local lines = vim.api.nvim_buf_get_lines(bufnr, 0, 200, false)
-    local package_name
-    for _, l in ipairs(lines) do
-      local pkg = l:match("^%s*package%s+([%w%.]+)%s*;")
-      if pkg then
-        package_name = pkg
-        break
-      end
-    end
-    local class_name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t:r")
-    local target = package_name and (package_name .. "." .. class_name) or class_name
-
-    local match
-    for _, c in ipairs(configs) do
-      if c.mainClass == target then
-        match = c
-        break
-      end
-    end
-    if not match and #configs == 1 then match = configs[1] end
-    if not match then
-      vim.notify("Không tìm thấy main class cho file hiện tại (" .. target .. "). Dùng <leader>dr để chọn thủ công.",
-        vim.log.levels.WARN)
-      return
-    end
-
-    local cfg = vim.deepcopy(match)
-    _G._last_dap_run_cfg = cfg
-    require("dap").run(cfg)
+  local configs = jdm.config_store.list(root)
+  if #configs == 0 then
+    vim.notify(
+      "Chưa có debug config nào cho project này. Dùng :JavaDebugConfigScan (dò main class có sẵn) " ..
+      "hoặc :JavaDebugConfigFromFile (tạo từ file đang mở) trước.", vim.log.levels.WARN)
+    return
+  end
+  if #configs == 1 then
+    jdm.debug_config_run(root, configs[1].name)
+    return
+  end
+  vim.ui.select(configs, {
+    prompt = "Chạy debug config:",
+    format_item = function(c) return c.name .. " (" .. c.main_class .. ")" end,
+  }, function(choice)
+    if choice then jdm.debug_config_run(root, choice.name) end
   end)
+end, { desc = "Debug: continue / chạy debug config (java-debug-model)" })
+
+-- Chạy nhanh main class của file hiện tại (giống Ctrl+Shift+F10): tìm 1 config đã lưu khớp đúng
+-- class hiện tại - qua jdtls.util.resolve_classname() (đọc "package" thật trong file, giống
+-- java-debug-model.debug_config_from_file), KHÔNG đoán qua tên file - rồi chạy thẳng qua
+-- java-debug-model (có sourcePaths cho sibling module). Chưa có config sẵn thì báo tạo bằng
+-- :JavaDebugConfigFromFile thay vì tự dựng 1 config tạm không qua sourcePaths như trước.
+map("n", "<leader>jr", function()
+  local jdm = require("java-debug-model")
+  local root = jdm._find_root(0)
+  if not root then
+    vim.notify("java-debug-model: không tìm thấy project root (pom.xml) cho file này.", vim.log.levels.WARN)
+    return
+  end
+  local ok_util, jdtls_util = pcall(require, "jdtls.util")
+  local current_class = nil
+  if ok_util then
+    local ok_call, result = pcall(jdtls_util.resolve_classname)
+    if ok_call then current_class = result end
+  end
+  if not current_class then
+    vim.notify("Không xác định được class hiện tại (jdtls chưa attach xong?).", vim.log.levels.WARN)
+    return
+  end
+  for _, cfg in ipairs(jdm.config_store.list(root)) do
+    if cfg.main_class == current_class then
+      jdm.debug_config_run(root, cfg.name)
+      return
+    end
+  end
+  vim.notify(
+    "Chưa có debug config cho '" .. current_class .. "'. Dùng :JavaDebugConfigFromFile để tạo.",
+    vim.log.levels.WARN)
 end, { desc = "Debug: run main of current file (Ctrl+Shift+F10)" })
 
 -- Resume program (giống F9 của IntelliJ). Bấm khi chưa có session sẽ không làm gì -
@@ -323,25 +194,32 @@ end, { desc = "Debug: run main of current file (Ctrl+Shift+F10)" })
 map("n", "<F9>", function() require("dap").continue() end, { desc = "Resume program" })
 -- Step over/into/out/toggle breakpoint giờ nằm ở F8/F7/Shift-F8/Ctrl-F8 (xem dap.lua)
 
--- IntelliJ-style: chọn config, chọn Spring profile, sửa VM args/program args/working dir trước khi run
-map("n", "<leader>dr", run_java_debug, { desc = "Debug: run with custom config (profile + cwd)" })
-
--- (Không còn "Edit Configurations" đã lưu như trước - dùng <leader>dr mỗi lần run để sửa
--- profile/VM args/program args/cwd. Các phím Java khác (<leader>ju/jU/jR/jv/jev/jec/jem/joi)
--- giờ nằm ở ftplugin/java.lua, gắn theo buffer khi jdtls attach.)
+-- Sửa VM args/program args/working dir/profile Maven của 1 config đã lưu (chọn từ danh sách) -
+-- thay cho wizard <leader>dr cũ. Tạo config mới: :JavaDebugConfigAdd/:JavaDebugConfigScan/
+-- :JavaDebugConfigFromFile. Các phím Java khác (<leader>ju/jU/jR/jv/jev/jec/jem/joi) nằm ở
+-- java-debug-model/jdtls_launcher.lua, gắn theo buffer khi jdtls attach.
+map("n", "<leader>dr", function()
+  local jdm = require("java-debug-model")
+  local root = jdm._find_root(0)
+  if not root then
+    vim.notify("java-debug-model: không tìm thấy project root (pom.xml) cho file này.", vim.log.levels.WARN)
+    return
+  end
+  local configs = jdm.config_store.list(root)
+  if #configs == 0 then
+    vim.notify("Chưa có debug config nào. Dùng :JavaDebugConfigScan hoặc :JavaDebugConfigFromFile trước.",
+      vim.log.levels.WARN)
+    return
+  end
+  vim.ui.select(configs, {
+    prompt = "Sửa debug config:",
+    format_item = function(c) return c.name .. " (" .. c.main_class .. ")" end,
+  }, function(choice)
+    if choice then jdm.debug_config_edit(root, choice.name) end
+  end)
+end, { desc = "Debug: sửa config đã lưu (VM args/program args/cwd/profile)" })
 
 -- ===== Terminal & Maven (giống terminal trong IntelliJ) =====
-local Terminal = require("toggleterm.terminal").Terminal
-
-function _G.run_maven(cmd)
-  local terminal = Terminal:new({
-    cmd = "mvn " .. cmd,
-    direction = "horizontal",
-    dir = vim.fn.getcwd(),
-    close_on_exit = false, -- chạy xong giữ nguyên panel để xem log/kết quả build
-  })
-  terminal:toggle()
-end
 
 -- Chọn JDK cho terminal/Maven (áp dụng cho các lệnh mvn chạy SAU khi chọn, không ảnh hưởng
 -- terminal đã mở sẵn). Đổi JDK dùng để compile/debug project trong jdtls thì dùng <leader>jv.
@@ -366,10 +244,44 @@ map("n", "<leader>mv", function()
 end, { desc = "Maven: chọn JDK version" })
 
 map("n", "<A-2>", "<cmd>ToggleTerm<CR>", { desc = "Toggle terminal" })
-map("n", "<leader>mc", ":lua run_maven('clean')<CR>", { desc = "Maven: clean" })
-map("n", "<leader>mC", ":lua run_maven('compile')<CR>", { desc = "Maven: compile" })
-map("n", "<leader>mt", ":lua run_maven('test')<CR>", { desc = "Maven: test" })
-map("n", "<leader>mp", ":lua run_maven('package -DskipTests')<CR>", { desc = "Maven: package" })
-map("n", "<leader>mi", ":lua run_maven('install -DskipTests')<CR>", { desc = "Maven: install" })
-map("n", "<leader>msb", ":lua run_maven('spring-boot:run')<CR>", { desc = "Maven: spring-boot:run" })
-map("n", "<leader>mdt", ":lua run_maven('dependency:tree')<CR>", { desc = "Maven: dependency tree" })
+
+-- Maven Lifecycle giờ qua java-debug-model (giống tool window Maven của IntelliJ) - scope đúng
+-- theo TỪNG module thay vì chạy `mvn` thô trên cwd hiện tại, có toggle Skip Tests. Thay hẳn cho
+-- <leader>mc/mC/mt/mp/mi/mdt/msb cũ (gọi mvn thô qua toggleterm, không phân biệt module).
+map("n", "<leader>mm", "<cmd>JavaMavenPanel<CR>", { desc = "Maven: mở Lifecycle panel (chọn module)" })
+map("n", "<leader>ml", "<cmd>JavaMavenLifecycle<CR>", { desc = "Maven: chạy nhanh 1 phase (chọn module + phase)" })
+
+-- ===== Java project model (java-debug-model) =====
+-- "Reload Maven Project" giống IntelliJ - resolve lại effective pom + classpath, không cần
+-- restart jdtls. Dùng khi vừa sửa pom.xml (thêm dependency/module) mà chưa thấy cập nhật.
+map("n", "<leader>jl", "<cmd>JavaModelReload<CR>", { desc = "Java model: reload (giống Reload Maven Project)" })
+map("n", "<leader>ji", "<cmd>JavaModelInspect<CR>", { desc = "Java model: inspect (xem module/dependency đã resolve)" })
+
+-- Dependency Tree (giống Maven "Dependency Analyzer"/Diagram của IntelliJ) - chọn module, hiện
+-- `mvn dependency:tree -Dverbose` với dòng "omitted for conflict" tô đỏ, để tra library nào kéo
+-- vào version nào, version nào thắng - dùng khi debug NoSuchMethodError/ClassNotFoundException
+-- do xung đột version giữa các dependency chung.
+map("n", "<leader>jd", "<cmd>JavaDependencyTree<CR>", { desc = "Java: xem dependency tree của 1 module" })
+
+-- Chạy JUnit qua jdtls (giống Ctrl+Shift+F9 debug test của IntelliJ) - LUÔN qua DEBUG (không phải
+-- run thường), để breakpoint đặt sẵn trong test/code đang test có tác dụng. Panel kết quả riêng
+-- (pass/fail, rerun-failed). KHÔNG đụng <leader>tr/tf/ta/ts/to của neotest (dùng chung ngôn ngữ khác).
+map("n", "<leader>jtm", "<cmd>TestDebugNearestMethod<CR>", { desc = "Java test: debug method gần cursor" })
+map("n", "<leader>jtc", "<cmd>TestDebugClass<CR>", { desc = "Java test: debug cả class" })
+map("n", "<leader>jto", "<cmd>JavaTestResults<CR>", { desc = "Java test: mở panel kết quả (rerun-failed)" })
+
+-- Quản lý nhiều debug session Java cùng lúc (module+profile) - riêng với <leader>ds/dx/dX chung
+-- của nvim-dap (vẫn cần cho Rust/ngôn ngữ khác).
+--
+-- <leader>jsm: panel thường trực (danh sách session + phím tắt ngay trong đó: s start mới,
+-- f focus, l xem log, r restart, x stop, d xoá, R reload) - thay cho việc gọi lệnh :Java* rời
+-- rạc từng cái một (mỗi lệnh lại tự mở 1 vim.ui.select riêng, chọn xong đóng lại, muốn làm việc
+-- khác phải gọi lệnh khác). Các lệnh :JavaSession* cũ (jsp/jss/jsx/jsr) vẫn giữ - dùng nhanh
+-- 1 thao tác đơn lẻ không cần mở cả panel thì tiện hơn.
+map("n", "<leader>jsm", "<cmd>JavaSessionUI<CR>", { desc = "Java session: panel quản lý (start/focus/log/restart/stop/xoá)" })
+map("n", "<leader>jsp", "<cmd>JavaSessionPicker<CR>", { desc = "Java session: chọn/focus session (nhanh)" })
+map("n", "<leader>jss", "<cmd>JavaSessionStatus<CR>", { desc = "Java session: xem trạng thái (nhanh)" })
+map("n", "<leader>jsx", "<cmd>JavaSessionStop<CR>", { desc = "Java session: tắt 1 session (nhanh)" })
+map("n", "<leader>jsr", "<cmd>JavaSessionRestart<CR>", {
+  desc = "Java session: restart (nhanh, resolve lại classPaths/sourcePaths)",
+})

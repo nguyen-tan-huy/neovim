@@ -51,9 +51,47 @@ return {
 					},
 				},
 			})
-			-- key map for neo tree
-			vim.keymap.set("n", "<leader>v", ":Neotree filesystem reveal right<CR>", {})
-			vim.keymap.set("n", "<leader>vx", ":Neotree filesystem close <CR>", {})
+			-- <leader>v: TOGGLE cây file bên trái - nếu buffer hiện tại nằm trong 1 project Maven
+			-- mà java-debug-model hiểu được thì dùng Project Tree của nó (Project -> Module ->
+			-- Source Root -> file, giống Project view của IntelliJ, thay cho cây filesystem thô
+			-- của neo-tree); ngoài ra (project không phải Maven, hoặc plugin chưa load) fallback
+			-- về neo-tree như cũ. Đang mở thì đóng, đang đóng thì mở - giống Alt+1 toggle của
+			-- IntelliJ, không còn phím đóng riêng (<leader>vx đã bỏ - <leader>v tự lo cả 2 chiều).
+			local function tree_win()
+				local tree_bufnr = vim.fn.bufnr("java-debug-model://project-tree")
+				if tree_bufnr ~= -1 then
+					local winid = vim.fn.bufwinid(tree_bufnr)
+					if winid ~= -1 then return winid end
+				end
+				for _, win in ipairs(vim.api.nvim_list_wins()) do
+					if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == "neo-tree" then
+						return win
+					end
+				end
+				return nil
+			end
+			local function close_tree()
+				local winid = tree_win()
+				if winid then
+					vim.api.nvim_win_close(winid, false)
+					return
+				end
+				vim.cmd("Neotree filesystem close")
+			end
+			local function open_tree()
+				local ok_jdm, jdm = pcall(require, "java-debug-model")
+				if ok_jdm then
+					local root = jdm.find_root(0)
+					if root and vim.fn.filereadable(root .. "/pom.xml") == 1 then
+						vim.cmd("JavaProjectTree")
+						return
+					end
+				end
+				vim.cmd("Neotree filesystem reveal right")
+			end
+			vim.keymap.set("n", "<leader>v", function()
+				if tree_win() then close_tree() else open_tree() end
+			end, {})
 		end,
   },
   {
@@ -75,23 +113,27 @@ return {
         end
         local parts = {}
         if #names > 0 then table.insert(parts, "🐛 " .. table.concat(names, ", ")) end
-
-        -- Profile đã bấm <leader>dp nhưng chưa initialized xong (xem dap.lua) - hiện riêng để
-        -- biết đang khởi động, khỏi tưởng nhầm bấm không ăn vì JVM start hơi mất thời gian.
-        if ok_status then
-          local launching = {}
-          for name in pairs(dap_status_mod.launching) do table.insert(launching, name) end
-          if #launching > 0 then
-            table.sort(launching)
-            table.insert(parts, "⏳ " .. table.concat(launching, ", "))
-          end
-        end
         return table.concat(parts, " ")
       end
 
+      -- java-debug-model đang resolve Maven / chạy Maven Lifecycle / khởi động debug session
+      -- (xem lua/java-debug-model/status.lua) - mvn có thể mất 10-60s, không có báo gì thì
+      -- tưởng nhầm Neovim bị đứng.
+      local function java_debug_model_status()
+        local ok, jdm = pcall(require, "java-debug-model")
+        if not ok then return "" end
+        local ok_call, text = pcall(jdm.statusline)
+        return ok_call and text or ""
+      end
+
       require("lualine").setup({
+        -- Mặc định lualine chỉ vẽ lại theo sự kiện gõ phím/di chuyển con trỏ - trong lúc mvn
+        -- resolve/chạy lifecycle/khởi động debug thì người dùng thường chỉ ngồi chờ, không gõ
+        -- gì cả, nên phải tự poll định kỳ thì thanh loading mới cập nhật (VD: biến mất đúng
+        -- lúc mvn xong) thay vì bị kẹt lại trạng thái cũ tới khi có phím tiếp theo.
+        refresh = { statusline = 500 },
         sections = {
-          lualine_x = { dap_status, "encoding", "fileformat", "filetype" },
+          lualine_x = { java_debug_model_status, dap_status, "encoding", "fileformat", "filetype" },
         },
       })
     end,

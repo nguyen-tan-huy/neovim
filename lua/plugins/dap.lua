@@ -7,7 +7,14 @@ return {
   },
   config = function()
     local dap, dapui = require("dap"), require("dapui")
-    dap.set_log_level("TRACE") -- TẠM để chẩn đoán lỗi launch profile ở product-web
+    -- ĐÃ TẮT dap.set_log_level("TRACE") (từng bật tạm để chẩn đoán lỗi launch profile ở
+    -- product-web, quên tắt lại): TRACE ghi ra ~/.local/state/nvim/dap.log TOÀN BỘ payload của
+    -- MỌI message DAP (request/response/event) - đã xác nhận thực tế 1 response "stackTrace" của
+    -- ứng dụng Spring/Tomcat có tới 65 frame, dồn với "variables"/"scopes" mà dap-ui + nvim-dap-
+    -- virtual-text tự động truy vấn ngay lúc dừng ở breakpoint - việc pretty-print + ghi đĩa
+    -- ĐỒNG BỘ (chặn main thread) khối lượng đó đúng lúc breakpoint hit chính là nguyên nhân Neovim
+    -- bị đơ, KHÔNG phải do cơ chế truy vấn của dap-ui chậm. Mức mặc định (không gọi hàm này) nhẹ
+    -- hơn nhiều; chỉ bật lại TRACE khi thật sự cần soi lỗi DAP, và tắt ngay sau khi xong.
 
     -- Hiện value biến ngay bên cạnh code khi debug (giống inline debugger value của IntelliJ)
     require("nvim-dap-virtual-text").setup({
@@ -41,13 +48,15 @@ return {
     -- launch (tránh chiếm chỗ màn hình / xé layout code đang xem). Buffer được hiện ra
     -- qua cửa sổ NỔI (float) bấm-tắt bằng <leader>dt, và cửa sổ nổi đó luôn "đi theo" đúng
     -- session đang được focus (đổi focus bằng <leader>ds thì nổi cũng tự đổi log theo).
-    local term_bufs = {} -- config.name -> bufnr, mỗi profile debug 1 buffer console riêng
+    local dap_status = require("dap_status")
+    -- config.name -> bufnr, mỗi profile debug 1 buffer console riêng. Dùng THẲNG bảng chia sẻ ở
+    -- dap_status.lua (không còn local riêng) để java-debug-model/ui/session_manager.lua đọc được
+    -- log console của từng session mà không cần nvim-dap tự mở nổi qua <leader>dt trước.
+    local term_bufs = dap_status.term_bufs
     local float_win = nil -- winid đang mở (nil nếu đang ẩn)
     local last_session_name = nil -- tên session GẦN NHẤT (kể cả đã tắt), để <leader>dt vẫn
     -- xem được log lúc chương trình chạy xong/crash quá nhanh, session đã biến mất khỏi
     -- dap.sessions() trước khi kịp bấm xem console.
-
-    local dap_status = require("dap_status")
 
     dap.defaults.fallback.terminal_win_cmd = function(config)
       local buf = vim.api.nvim_create_buf(false, true)
@@ -169,7 +178,6 @@ return {
     local function on_session_ended(session)
       vim.schedule(function()
         if session and session.config then
-          dap_status.launching[session.config.name] = nil
           vim.notify("Đã tắt session debug: " .. session.config.name, vim.log.levels.INFO)
         end
         vim.cmd("redrawstatus")
@@ -177,13 +185,8 @@ return {
     end
     dap.listeners.after.event_terminated["status_notify"] = on_session_ended
     dap.listeners.after.event_exited["status_notify"] = on_session_ended
-    dap.listeners.after.event_initialized["status_notify"] = function(session)
-      vim.schedule(function()
-        if session and session.config then
-          dap_status.launching[session.config.name] = nil
-        end
-        vim.cmd("redrawstatus")
-      end)
+    dap.listeners.after.event_initialized["status_notify"] = function()
+      vim.schedule(function() vim.cmd("redrawstatus") end)
     end
 
     -- Nhớ PID thật của JVM debuggee, phòng khi DAP event "process" (body.systemProcessId) có
@@ -309,7 +312,8 @@ return {
     vim.keymap.set("n", "<leader>dc", function() dap.run_to_cursor() end, { desc = "Debug: run to cursor" })
 
     -- Hot reload code thủ công (Compile and Reload): jdtls tự biên dịch nền khi lưu file,
-    -- bấm Ctrl+\ để nạp bytecode mới vào JVM đang debug (không tự động, xem ftplugin/java.lua)
+    -- bấm Ctrl+\ để nạp bytecode mới vào JVM đang debug (không tự động, xem
+    -- java-debug-model/jdtls_launcher.lua)
     vim.keymap.set("n", "<C-\\>", function()
       local session = dap.session()
       if not session then
@@ -326,139 +330,16 @@ return {
       end)
     end, { desc = "Debug: hot reload code (redefineClasses)" })
 
-    -- Restart session hiện tại (đang focus), giữ nguyên config. KHÔNG dùng dap.restart() mặc
-    -- định: java-debug không hỗ trợ "restart" request (supportsRestartRequest=false) nên nó tự
-    -- fallback terminate + chạy lại NGAY sau khi disconnect "success" - dính đúng bug ở
-    -- terminate_with_fallback_kill (JVM cũ chưa thoát thật), nên JVM mới launch lại có thể bind
-    -- lỗi "Address already in use" vì JVM cũ vẫn giữ port, hoặc tệ hơn là chạy chồng 2 tiến
-    -- trình. Ở đây tự terminate rồi ĐỢI port nhả ra hẳn (force-kill nếu cần) mới launch lại.
-    vim.keymap.set("n", "<leader>dR", function()
-      local s = dap.session()
-      if not s then
-        vim.notify("Không có debug session đang chạy.", vim.log.levels.WARN)
-        return
-      end
-      local config = s.config
-      local name = config.name
-      local pid_from_event = dap_status.pids[name]
-      local port = dap_status.ports[name]
-      vim.notify("Đang restart '" .. name .. "'...", vim.log.levels.INFO)
-      dap.terminate()
-      wait_release_then(name, pid_from_event, port, function()
-        dap.run(config, { new = true })
-      end)
-    end, { desc = "Debug: restart session hiện tại" })
+    -- Bỏ <leader>dR (restart session) cũ ở đây - nó dùng thẳng dap.run(config, {new=true}) với
+    -- session.config đã snapshot từ lúc launch, không đi qua java-debug-model nên không resolve
+    -- lại classPaths/sourcePaths mới nhất. Muốn restart: <leader>dX (tắt session) rồi F5 lại -
+    -- F5 luôn đi qua debug_config_run nên resolve lại đúng.
 
-    -- Chạy thêm 1 profile debug mới SONG SONG với session đang chạy (không tắt session cũ),
-    -- giống chạy nhiều Run/Debug Configuration cùng lúc của IntelliJ. Sửa main class/working
-    -- directory/VM args/program args/biến môi trường qua 1 panel trước khi chạy - thay đổi được
-    -- áp dụng thẳng vào profile đã chọn (trong dap.configurations.java) và tự lưu lại xuống đĩa
-    -- luôn, để tắt/mở lại Neovim vẫn còn, không cần bấm thêm <leader>jps.
-    vim.keymap.set("n", "<leader>dp", function()
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if not root_dir then return end
-      require("dap_profiles").ensure_loaded(root_dir)
-      local configs = dap.configurations.java
-      if not configs or #configs == 0 then
-        vim.notify("Không có debug configuration nào cho project này.", vim.log.levels.WARN)
-        return
-      end
-      vim.ui.select(configs, {
-        prompt = "Chạy profile debug mới (song song):",
-        format_item = function(c) return c.name end,
-      }, function(choice)
-        if not choice then return end
-        require("dap_profiles").edit_overrides(choice, function(result)
-          if result then -- nil = huỷ panel, giữ nguyên profile gốc
-            choice.mainClass = result.mainClass
-            choice.cwd = result.cwd
-            choice.vmArgs = result.vmArgs
-            choice.args = result.args
-            choice.env = next(result.env) and result.env or nil
-            require("dap_profiles").save(root_dir, configs)
-          end
-          -- Đánh dấu "đang khởi động" ngay để statusline (🐛 ở lualine) hiện lên liền, không đợi
-          -- session initialized xong mới biết - JVM start mất vài giây, không có dấu hiệu gì
-          -- trong lúc đó thì dễ tưởng bấm không ăn. Timeout 30s để tự gỡ nếu launch treo/lỗi mà
-          -- không bắn event_terminated/exited nào (vd sai adapter, JDWP không kết nối được).
-          dap_status.launching[choice.name] = true
-          vim.cmd("redrawstatus")
-          vim.defer_fn(function()
-            if dap_status.launching[choice.name] then
-              dap_status.launching[choice.name] = nil
-              vim.notify("Vẫn chưa thấy '" .. choice.name .. "' khởi động xong sau 30s - có thể launch đã treo/lỗi.",
-                vim.log.levels.WARN)
-              vim.cmd("redrawstatus")
-            end
-          end, 30000)
-          dap.run(choice, { new = true }) -- new = true: luôn tạo session mới, không đụng session đang chạy
-        end)
-      end)
-    end, { desc = "Debug: chạy thêm profile mới (song song)" })
-
-    -- Quản lý danh sách debug profile (lưu ở <project_root>/.nvim/dap-profiles.json) - toàn cục,
-    -- KHÔNG cần đang đứng trong buffer .java (chỉ <leader>jpc ở ftplugin/java.lua mới cần, vì nó
-    -- dò package/class name từ chính file đang mở). Xem lua/dap_profiles.lua.
-    local function jp_mainclass_hint()
-      if vim.bo.filetype == "java" then
-        return require("jdtls.util").resolve_classname()
-      end
-      return nil
-    end
-
-    -- Reload danh sách profile debug: nạp lại file đã lưu + cho jdtls dò thêm main class mới,
-    -- rồi tự lưu lại xuống đĩa (giống F5 refresh danh sách Run/Debug Configuration của IntelliJ).
-    vim.keymap.set("n", "<leader>jpl", function()
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if not root_dir then return end
-      local dap_profiles = require("dap_profiles")
-      dap.configurations.java = dap_profiles.load(root_dir)
-      require("jdtls.dap").setup_dap_main_class_configs({
-        on_ready = function()
-          local configs = dap.configurations.java
-          dap_profiles.save(root_dir, configs)
-          vim.notify(string.format("Đã reload %d profile debug.", #configs), vim.log.levels.INFO)
-        end,
-      })
-    end, { desc = "Debug profile: reload danh sách" })
-
-    -- Lưu danh sách profile debug hiện tại (đã sửa tay bằng <leader>dp thêm session, hoặc để
-    -- backup thủ công) xuống <project_root>/.nvim/dap-profiles.json.
-    vim.keymap.set("n", "<leader>jps", function()
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if not root_dir then return end
-      require("dap_profiles").save(root_dir, dap.configurations.java or {})
-    end, { desc = "Debug profile: lưu danh sách hiện tại" })
-
-    -- Thêm 1 profile debug mới (nhập tay tên/args/vmArgs), main class gợi ý sẵn theo
-    -- package.class nếu đang đứng trong 1 file Java (vẫn sửa được nếu muốn trỏ tới class khác).
-    vim.keymap.set("n", "<leader>jpa", function()
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if not root_dir then return end
-      require("dap_profiles").add("java", root_dir, {
-        mainClass = jp_mainclass_hint(),
-        projectName = vim.fn.fnamemodify(root_dir, ":p:h:t"),
-      })
-    end, { desc = "Debug profile: thêm mới" })
-
-    -- Sửa 1 profile debug có sẵn (chọn từ danh sách), tự lưu lại xuống đĩa. Field nào profile
-    -- đang thiếu (vd chưa có mainClass/projectName) thì gợi ý sẵn theo file Java đang mở (nếu có),
-    -- giống <leader>jpa, đỡ phải gõ tay lại từ đầu.
-    vim.keymap.set("n", "<leader>jpe", function()
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if not root_dir then return end
-      require("dap_profiles").edit("java", root_dir, {
-        mainClass = jp_mainclass_hint(),
-        projectName = vim.fn.fnamemodify(root_dir, ":p:h:t"),
-      })
-    end, { desc = "Debug profile: sửa" })
-
-    -- Xoá 1 profile debug (chọn từ danh sách), tự lưu lại xuống đĩa.
-    vim.keymap.set("n", "<leader>jpd", function()
-      local root_dir = require("dap_profiles").resolve_root_dir()
-      if not root_dir then return end
-      require("dap_profiles").delete("java", root_dir)
-    end, { desc = "Debug profile: xoá" })
+    -- Quản lý debug config (thêm/sửa/xoá/chạy, kể cả chạy song song nhiều config) đã chuyển
+    -- sang java-debug-model: :JavaDebugConfigAdd/:JavaDebugConfigEdit/:JavaDebugConfigRemove/
+    -- :JavaDebugConfigRun/:JavaDebugConfigFromFile/:JavaDebugConfigScan (xem
+    -- ~/Git-projects/java-debug-model) - mỗi lần :JavaDebugConfigRun luôn tạo session mới
+    -- (dap.lua của plugin đó), nên chạy song song nhiều config vẫn hoạt động như <leader>dp cũ.
 
     -- Chuyển session đang "focus" (session bị step/continue/breakpoint tác động) sang 1 session
     -- khác trong số các session/profile đang chạy song song.

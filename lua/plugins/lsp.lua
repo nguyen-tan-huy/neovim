@@ -11,24 +11,24 @@ return {
     dependencies = { "mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        -- "jdtls" chỉ để Mason tải về, KHÔNG để mason-lspconfig tự khởi động (jdtls cần
-        -- start_or_attach thủ công theo từng project, xem ftplugin/java.lua)
-        ensure_installed = { "lua_ls", "lemminx", "jdtls", "rust_analyzer" },
+        -- jdtls KHÔNG còn liệt kê ở đây - Mason install + lookup path của nó (kể cả
+        -- java-debug-adapter/java-test) giờ do java-debug-model tự lo trong setup() của chính
+        -- nó (xem java-debug-model/bootstrap.lua), "jdtls" cũng KHÔNG để mason-lspconfig tự
+        -- khởi động (cần start_or_attach thủ công theo từng project).
+        ensure_installed = { "lua_ls", "lemminx", "rust_analyzer" },
         -- CHẶN mason-lspconfig tự bật LSP server → tránh xung đột với nvim-jdtls
         automatic_enable = false,
       })
 
-      -- Cài thêm qua Mason: java-debug-adapter/java-test (DAP + JUnit runner cho Java) và
-      -- codelldb (DAP cho Rust, xem dap.lua) - không phải LSP server nên mason-lspconfig
-      -- không tự tải, phải gọi registry trực tiếp.
+      -- codelldb (DAP cho Rust, xem dap.lua) - không phải LSP server nên mason-lspconfig không
+      -- tự tải, phải gọi registry trực tiếp. jdtls/java-debug-adapter/java-test giờ do
+      -- java-debug-model tự cài (xem bootstrap.lua), không lặp lại ở đây nữa.
       local ok_registry, registry = pcall(require, "mason-registry")
       if ok_registry then
-        for _, name in ipairs({ "java-debug-adapter", "java-test", "codelldb" }) do
-          local ok_pkg, pkg = pcall(registry.get_package, name)
-          if ok_pkg and not pkg:is_installed() then
-            vim.notify("Đang cài " .. name .. " qua Mason...", vim.log.levels.INFO)
-            pkg:install()
-          end
+        local ok_pkg, pkg = pcall(registry.get_package, "codelldb")
+        if ok_pkg and not pkg:is_installed() then
+          vim.notify("Đang cài codelldb qua Mason...", vim.log.levels.INFO)
+          pkg:install()
         end
       end
     end,
