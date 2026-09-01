@@ -160,15 +160,17 @@ return {
       end
     end, { desc = "Debug: bật/tắt console nổi (theo session đang focus)" })
 
-    -- Tự mở/đóng UI debug (variables, watch, call stack) giống IntelliJ.
-    -- Chỉ đóng khi KHÔNG còn session nào khác đang chạy (hỗ trợ nhiều profile song song):
-    -- tắt 1 profile không được đóng UI nếu các profile khác vẫn đang debug.
+    -- KHÔNG còn tự mở dapui mỗi lần debug chạy nữa - java-debug-model/ui/session_manager.lua
+    -- (<leader>jsm) giờ là nơi xem log console mặc định, dapui (Scopes/Watches/Call Stack/
+    -- Breakpoints) chỉ mở khi thật sự cần bấm <leader>du, tránh 2 layout tự bật chồng lên nhau
+    -- mỗi lần chạy debug. Vẫn tự ĐÓNG khi hết session (dọn dẹp UI đã lỡ mở tay) - chỉ đóng khi
+    -- KHÔNG còn session nào khác đang chạy (hỗ trợ nhiều profile song song): tắt 1 profile không
+    -- được đóng UI nếu các profile khác (kể cả Rust) vẫn đang debug.
     local function close_dapui_if_no_sessions()
       vim.schedule(function()
         if vim.tbl_isempty(dap.sessions()) then dapui.close() end
       end)
     end
-    dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
     dap.listeners.before.event_terminated["dapui_config"] = close_dapui_if_no_sessions
     dap.listeners.before.event_exited["dapui_config"] = close_dapui_if_no_sessions
 

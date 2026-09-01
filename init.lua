@@ -279,6 +279,12 @@ map("n", "<leader>jto", "<cmd>JavaTestResults<CR>", { desc = "Java test: mở pa
 -- khác phải gọi lệnh khác). Các lệnh :JavaSession* cũ (jsp/jss/jsx/jsr) vẫn giữ - dùng nhanh
 -- 1 thao tác đơn lẻ không cần mở cả panel thì tiện hơn.
 map("n", "<leader>jsm", "<cmd>JavaSessionUI<CR>", { desc = "Java session: panel quản lý (start/focus/log/restart/stop/xoá)" })
+
+-- Neovim không có khái niệm "docking zone" như IntelliJ - mở/đóng nhiều panel (Project Tree,
+-- Session Manager, Maven Panel) theo thứ tự khác nhau đôi khi làm 1 panel bị co lại còn vài ký
+-- tự (đã gặp thật). Bấm phím này để đóng hết rồi mở lại đúng thứ tự chuẩn (tree -> session
+-- manager -> maven panel), về lại layout gọn gàng.
+map("n", "<leader>vr", "<cmd>JavaLayoutReset<CR>", { desc = "Java: sắp xếp lại layout panel (tree/session/maven)" })
 map("n", "<leader>jsp", "<cmd>JavaSessionPicker<CR>", { desc = "Java session: chọn/focus session (nhanh)" })
 map("n", "<leader>jss", "<cmd>JavaSessionStatus<CR>", { desc = "Java session: xem trạng thái (nhanh)" })
 map("n", "<leader>jsx", "<cmd>JavaSessionStop<CR>", { desc = "Java session: tắt 1 session (nhanh)" })

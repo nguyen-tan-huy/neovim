@@ -27,12 +27,16 @@ RAMP_MS = 260.0        # how long (ms) after touch-down before scroll reaches fu
 RAMP_POWER = 2.0       # ease-in curve exponent (progress**power => a real parabola, not linear). Higher = slower/gentler start.
 SMOOTHING = 0.2        # low-pass filter factor (0-1) easing output velocity toward input while touching. Lower = smoother but laggier, higher = snappier but choppier.
 CURSOR_MOVE_THRESHOLD = 3.0  # raw device units of 1-finger travel per SYN_REPORT before it counts as "moving the cursor" (vs. sensor jitter).
+LIFTOFF_GRACE_MS = 250.0  # right after a two-finger scroll ends, ignore the trailing single-finger drag (one finger often leaves the pad slightly before the other) so it doesn't get mistaken for a deliberate cursor move and cancel the coast.
+AXIS_LOCK_DECIDE_MM = 3.0  # cumulative pan movement (mm) since gesture start before deciding whether to lock the scroll to one axis.
+AXIS_LOCK_RATIO = 1.5      # one axis must have moved at least this many times more than the other, at decision time, to lock to it (otherwise stays a free diagonal scroll).
 PINCH_MIN_MM = 0.15    # minimum change (mm) in inter-finger spacing per sample to even consider it a pinch, not scroll jitter.
 PINCH_RATIO = 0.6      # spacing change must be at least this fraction of the pan distance to be classified as pinch/zoom instead of a two-finger pan.
+PINCH_STREAK_MIN = 2   # consecutive pinch-looking samples required before actually suppressing scroll (debounces single-sample noise during fast pans).
 RETOUCH_GRACE_MS = 120.0  # a touch-down within this long after a touch-up is treated as the same gesture continuing (see touch_start), not a fresh one.
 
 # ---- mouse tunables ---------------------------------------------------------
-MOUSE_GAIN = 1.0             # multiplier on raw wheel notch value (120 hi-res units = 1 notch).
+MOUSE_GAIN = 0.5             # multiplier on raw wheel notch value (120 hi-res units = 1 notch).
 MOUSE_NATURAL_SCROLL = False # invert mouse wheel direction independently of the touchpad.
 MOUSE_FRICTION = 0.94        # a bit shorter inertia than the touchpad by default.
 MOUSE_MIN_VELOCITY = 5.0
@@ -133,6 +137,11 @@ class ScrollSmoother:
         with self.lock:
             if not self.held:
                 self.velocity[0] = self.velocity[1] = 0.0
+
+    def recently_ended(self, grace_ms, now=None):
+        now = now if now is not None else time.time()
+        with self.lock:
+            return self.last_touch_end_t is not None and (now - self.last_touch_end_t) * 1000.0 < grace_ms
 
     def feed(self, dx_raw, dy_raw, now=None):
         now = now if now is not None else time.time()
@@ -276,6 +285,10 @@ def touchpad_worker(smoother, stop_flag, all_smoothers):
     last_avg = None
     last_sep_mm = None  # inter-finger spacing (mm), to tell pinch/zoom apart from a two-finger pan
     last_single = None  # tracks 1-finger position, to detect real cursor movement (not scroll)
+    pinch_streak = 0  # consecutive pinch-looking samples; debounces single-sample noise during fast pans
+    axis_lock = None  # None = still deciding, 'x'/'y' = locked, 'free' = decided diagonal (no lock)
+    cum_dx_mm = 0.0  # cumulative pan movement (mm) since the current gesture started, used to pick axis_lock
+    cum_dy_mm = 0.0
 
     for event in dev.read_loop():
         if stop_flag.is_set():
@@ -294,10 +307,16 @@ def touchpad_worker(smoother, stop_flag, all_smoothers):
                     smoother.touch_start()
                     last_avg = None
                     last_sep_mm = None
+                    pinch_streak = 0
+                    axis_lock = None
+                    cum_dx_mm = cum_dy_mm = 0.0
                 else:
                     smoother.touch_end()
                     last_avg = None
                     last_sep_mm = None
+                    pinch_streak = 0
+                    axis_lock = None
+                    cum_dx_mm = cum_dy_mm = 0.0
                 last_single = None
             elif event.code == ecodes.ABS_MT_POSITION_X:
                 slots.setdefault(cur_slot, {})["x"] = event.value
@@ -323,13 +342,35 @@ def touchpad_worker(smoother, stop_flag, all_smoothers):
                         dmy_mm = (ay - last_avg[1]) / res_y * 25.4
                         dsep_mm = abs(sep_mm - last_sep_mm)
                         pan_mm = math.hypot(dmx_mm, dmy_mm)
-                        if dsep_mm > PINCH_MIN_MM and dsep_mm > pan_mm * PINCH_RATIO:
-                            # Fingers spreading/pinching, not panning together: this is a
-                            # zoom gesture -- let libinput's own pinch recognizer handle it
+                        looks_pinchy = dsep_mm > PINCH_MIN_MM and dsep_mm > pan_mm * PINCH_RATIO
+                        pinch_streak = pinch_streak + 1 if looks_pinchy else 0
+                        if pinch_streak >= PINCH_STREAK_MIN:
+                            # Fingers spreading/pinching, not panning together, for several
+                            # samples in a row (not just one noisy sample -- fast pans can
+                            # briefly desync the two fingers' spacing too): this is a zoom
+                            # gesture -- let libinput's own pinch recognizer handle it
                             # untouched, and ease our scroll velocity to zero instead of
                             # emitting wheel events for the midpoint drift.
                             smoother.feed(0.0, 0.0, now)
                         else:
+                            cum_dx_mm += dmx_mm
+                            cum_dy_mm += dmy_mm
+                            if axis_lock is None and math.hypot(cum_dx_mm, cum_dy_mm) > AXIS_LOCK_DECIDE_MM:
+                                # Enough movement to tell intent: pick whichever axis
+                                # dominates so far and lock to it for the rest of the
+                                # gesture, muting cross-axis drift from an imperfectly
+                                # straight swipe. A genuinely diagonal swipe (neither
+                                # axis dominant) stays unlocked.
+                                if abs(cum_dy_mm) > abs(cum_dx_mm) * AXIS_LOCK_RATIO:
+                                    axis_lock = "y"
+                                elif abs(cum_dx_mm) > abs(cum_dy_mm) * AXIS_LOCK_RATIO:
+                                    axis_lock = "x"
+                                else:
+                                    axis_lock = "free"
+                            if axis_lock == "y":
+                                dmx_mm = 0.0
+                            elif axis_lock == "x":
+                                dmy_mm = 0.0
                             sign = -1 if NATURAL_SCROLL else 1
                             smoother.feed(sign * dmx_mm * GAIN, sign * dmy_mm * GAIN, now)
                     last_avg = (ax, ay)
@@ -342,7 +383,7 @@ def touchpad_worker(smoother, stop_flag, all_smoothers):
                 s = next(iter(active_fingers))
                 pt = slots.get(s)
                 if pt and pt.get("x") is not None and pt.get("y") is not None:
-                    if last_single is not None:
+                    if last_single is not None and not smoother.recently_ended(LIFTOFF_GRACE_MS):
                         dx = pt["x"] - last_single[0]
                         dy = pt["y"] - last_single[1]
                         if abs(dx) > CURSOR_MOVE_THRESHOLD or abs(dy) > CURSOR_MOVE_THRESHOLD:
