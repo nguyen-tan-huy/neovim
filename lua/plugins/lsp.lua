@@ -86,6 +86,29 @@ return {
           -- (nếu là method của interface thì nhảy thẳng vào class implement, không dừng
           -- ở khai báo trừu tượng của interface); đứng ngay tại khai báo -> nhảy tới
           -- danh sách nơi hàm được dùng (usages)
+          --
+          -- Nhảy THẲNG bằng kết quả request đã có (show_document/quickfix) thay vì gọi lại
+          -- vim.lsp.buf.implementation()/definition() ở bước cuối - 2 hàm đó tự gửi lại ĐÚNG
+          -- request vừa nhận xong chỉ để nhảy, tức mỗi lần bấm tốn tới 3 round-trip tới jdt.ls
+          -- (definition + implementation + lặp lại 1 trong 2 cái đó) thay vì 2. Với 1 project
+          -- Maven nhiều module, mỗi request có thể mất vài trăm ms nên request thừa này là phần
+          -- chậm cảm nhận được rõ nhất - bỏ nó đi giảm ngay ~1/3 độ trễ mà đích nhảy tới không đổi.
+          local function jump_or_list(buf2, locations)
+            if not locations or vim.tbl_isempty(locations) then return false end
+            local client = vim.lsp.get_clients({ bufnr = buf2 })[1]
+            local offset_encoding = client and client.offset_encoding or "utf-16"
+            if not vim.islist(locations) then
+              vim.lsp.util.show_document(locations, offset_encoding, { reuse_win = true, focus = true })
+            elseif #locations == 1 then
+              vim.lsp.util.show_document(locations[1], offset_encoding, { reuse_win = true, focus = true })
+            else
+              local items = vim.lsp.util.locations_to_items(locations, offset_encoding)
+              vim.fn.setqflist({}, " ", { title = "LSP locations", items = items })
+              vim.cmd("copen")
+            end
+            return true
+          end
+
           map("n", "<C-b>", function()
             -- File xhtml (JSF/PrimeFaces): nếu cursor đang đứng trong EL expression
             -- (#{bean.action}) thì nhảy sang Java backing bean, lemminx không hiểu EL
@@ -113,12 +136,13 @@ return {
               -- Không đứng tại khai báo: thử textDocument/implementation trước.
               -- Với method của interface, server trả về class implement thật;
               -- nếu server không hỗ trợ hoặc không có implementation nào thì
-              -- rơi về definition như cũ.
+              -- rơi về definition như cũ. Cả 2 nhánh nhảy thẳng bằng kết quả đã có
+              -- (jump_or_list) - KHÔNG gửi lại request thứ 3.
               vim.lsp.buf_request(buf, "textDocument/implementation", params, function(_, impl_result)
                 if impl_result and not vim.tbl_isempty(impl_result) then
-                  vim.lsp.buf.implementation()
+                  jump_or_list(buf, impl_result)
                 else
-                  vim.lsp.buf.definition()
+                  jump_or_list(buf, result)
                 end
               end)
             end)

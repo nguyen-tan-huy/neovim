@@ -160,15 +160,17 @@ return {
       end
     end, { desc = "Debug: bật/tắt console nổi (theo session đang focus)" })
 
-    -- Tự mở/đóng UI debug (variables, watch, call stack) giống IntelliJ.
-    -- Chỉ đóng khi KHÔNG còn session nào khác đang chạy (hỗ trợ nhiều profile song song):
-    -- tắt 1 profile không được đóng UI nếu các profile khác vẫn đang debug.
+    -- KHÔNG còn tự mở dapui mỗi lần debug chạy nữa - java-debug-model/ui/session_manager.lua
+    -- (<leader>jsm) giờ là nơi xem log console mặc định, dapui (Scopes/Watches/Call Stack/
+    -- Breakpoints) chỉ mở khi thật sự cần bấm <leader>du, tránh 2 layout tự bật chồng lên nhau
+    -- mỗi lần chạy debug. Vẫn tự ĐÓNG khi hết session (dọn dẹp UI đã lỡ mở tay) - chỉ đóng khi
+    -- KHÔNG còn session nào khác đang chạy (hỗ trợ nhiều profile song song): tắt 1 profile không
+    -- được đóng UI nếu các profile khác (kể cả Rust) vẫn đang debug.
     local function close_dapui_if_no_sessions()
       vim.schedule(function()
         if vim.tbl_isempty(dap.sessions()) then dapui.close() end
       end)
     end
-    dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
     dap.listeners.before.event_terminated["dapui_config"] = close_dapui_if_no_sessions
     dap.listeners.before.event_exited["dapui_config"] = close_dapui_if_no_sessions
 
@@ -412,6 +414,15 @@ return {
         error("Đang có debug session chạy, chặn thoát Neovim (xem :messages).")
       end,
     })
+
+    -- Khi dừng ở breakpoint, nvim-dap mặc định "switchbuf = uselast" - CHỈ nhồi buffer đích vào
+    -- cửa sổ hiện tại (hoặc cửa sổ "alternate" #) mà KHÔNG bao giờ tự kiểm tra xem file đó đã mở
+    -- sẵn ở 1 cửa sổ khác trong tab hay chưa. Kết quả: nếu đang đứng ở 1 cửa sổ khác (vd panel
+    -- java-debug-model, REPL, cửa sổ split khác) lúc breakpoint hit, nvim-dap chiếm LUÔN cửa sổ đó
+    -- để hiện file breakpoint, trông như "mở buffer mới" thay vì nhảy về đúng cửa sổ/buffer đã mở
+    -- sẵn file đó từ trước. "useopen" quét mọi cửa sổ trong tab hiện tại trước, tái dùng cửa sổ đã
+    -- có sẵn buffer đó nếu tìm thấy; "uselast" vẫn giữ làm fallback khi file chưa mở ở đâu cả.
+    dap.defaults.fallback.switchbuf = "useopen,uselast"
 
     -- Breakpoint sign
     vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DiagnosticSignError", linehl = "", numhl = "" })

@@ -1,14 +1,79 @@
+-- Theme của toàn hệ thống (sway/waybar/fuzzel/mako/kitty/btop) chọn qua settings-ui,
+-- lưu tên ở ~/.config/sway/theme/state. Neovim đọc file này 1 LẦN lúc khởi động để
+-- chọn đúng colorscheme tương ứng (đổi theme lúc đang mở Neovim thì lần mở kế tiếp
+-- mới áp dụng - giống cách kitty xử lý theme, không có hot-reload).
+local function paper_theme_name()
+  local f = io.open(vim.fn.expand("~/.config/sway/theme/state"), "r")
+  if not f then return nil end
+  local name = f:read("*l")
+  f:close()
+  return name
+end
+local PAPER_THEME = paper_theme_name()
+
 return {
+  {
+    "rebelot/kanagawa.nvim",
+    priority = 1000,
+    config = function()
+      require("kanagawa").setup({
+        background = { dark = "wave", light = "lotus" },
+      })
+      -- kanagawa là colorscheme mặc định/fallback: áp dụng khi theme hệ thống là
+      -- "light"/"dark" (paper gốc), hoặc khi chưa nhận ra theme nào (an toàn, luôn có
+      -- 1 colorscheme hợp lệ dù chạy Neovim này ở máy khác không có theme state).
+      if PAPER_THEME == "light" then
+        vim.o.background = "light"
+        vim.cmd.colorscheme("kanagawa")
+      elseif PAPER_THEME == nil or PAPER_THEME == "dark" then
+        vim.o.background = "dark"
+        vim.cmd.colorscheme("kanagawa")
+      end
+    end,
+  },
+  {
+    "gbprod/nord.nvim",
+    priority = 1000,
+    config = function()
+      require("nord").setup({})
+      if PAPER_THEME == "nord" then
+        vim.cmd.colorscheme("nord")
+      end
+    end,
+  },
   {
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
     config = function()
-      require("gruvbox").setup({
-        contrast = "hard", -- "hard", "soft" hoặc "" (mặc định)
-        transparent_mode = false,
-      })
-      vim.o.background = "dark"
-      vim.cmd.colorscheme("gruvbox")
+      require("gruvbox").setup({})
+      if PAPER_THEME == "gruvbox-dark" then
+        vim.o.background = "dark"
+        vim.cmd.colorscheme("gruvbox")
+      elseif PAPER_THEME == "gruvbox-light" then
+        vim.o.background = "light"
+        vim.cmd.colorscheme("gruvbox")
+      end
+    end,
+  },
+  {
+    "maxmx03/solarized.nvim",
+    priority = 1000,
+    config = function()
+      require("solarized").setup({})
+      if PAPER_THEME == "solarized-dark" then
+        vim.o.background = "dark"
+        vim.cmd.colorscheme("solarized")
+      end
+    end,
+  },
+  {
+    "Mofiqul/dracula.nvim",
+    priority = 1000,
+    config = function()
+      require("dracula").setup({})
+      if PAPER_THEME == "dracula" then
+        vim.cmd.colorscheme("dracula")
+      end
     end,
   },
   {
