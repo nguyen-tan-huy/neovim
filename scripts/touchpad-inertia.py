@@ -19,32 +19,34 @@ import time
 from evdev import InputDevice, UInput, ecodes, list_devices
 
 # ---- touchpad tunables ------------------------------------------------------
-FRICTION = 0.985       # velocity multiplier applied every inertia tick (0-1). Higher = slides longer.
-GAIN = 1.1             # hi-res wheel units emitted per mm of finger travel. Raise = faster scroll.
-MIN_VELOCITY = 3.0     # hi-res units/sec below which inertia stops.
-NATURAL_SCROLL = False # True: content follows finger direction (macOS/Sway default).
-RAMP_MS = 260.0        # how long (ms) after touch-down before scroll reaches full speed.
-RAMP_POWER = 2.0       # ease-in curve exponent (progress**power => a real parabola, not linear). Higher = slower/gentler start.
-SMOOTHING = 0.2        # low-pass filter factor (0-1) easing output velocity toward input while touching. Lower = smoother but laggier, higher = snappier but choppier.
+FRICTION = 0.98       # velocity multiplier applied every inertia tick (0-1). Higher = slides longer.
+GAIN = 1.2000000000000002             # hi-res wheel units emitted per mm of finger travel. Raise = faster scroll.
+MIN_VELOCITY = 7.0     # hi-res units/sec below which inertia stops.
+NATURAL_SCROLL = True # True: content follows finger direction (macOS/Sway default).
+RAMP_MS = 290.0        # how long (ms) after touch-down before scroll reaches full speed.
+RAMP_POWER = 1.9       # ease-in curve exponent (progress**power => a real parabola, not linear). Higher = slower/gentler start.
+SMOOTHING = 0.29        # low-pass filter factor (0-1) easing output velocity toward input while touching. Lower = smoother but laggier, higher = snappier but choppier.
 CURSOR_MOVE_THRESHOLD = 3.0  # raw device units of 1-finger travel per SYN_REPORT before it counts as "moving the cursor" (vs. sensor jitter).
 LIFTOFF_GRACE_MS = 250.0  # right after a two-finger scroll ends, ignore the trailing single-finger drag (one finger often leaves the pad slightly before the other) so it doesn't get mistaken for a deliberate cursor move and cancel the coast.
-AXIS_LOCK_DECIDE_MM = 3.0  # cumulative pan movement (mm) since gesture start before deciding whether to lock the scroll to one axis.
-AXIS_LOCK_RATIO = 1.5      # one axis must have moved at least this many times more than the other, at decision time, to lock to it (otherwise stays a free diagonal scroll).
+AXIS_LOCK_DECIDE_MM = 5.0  # cumulative pan movement (mm) since gesture start before deciding whether to lock the scroll to one axis.
+AXIS_LOCK_RATIO = 2.2      # one axis must have moved at least this many times more than the other, at decision time, to lock to it (otherwise stays a free diagonal scroll).
+AXIS_LOCK_SUPPRESS = 0.15  # fraction of the non-dominant axis that still gets through once locked (soft lock), so an early misjudged lock doesn't fully eat the intended axis.
 PINCH_MIN_MM = 0.15    # minimum change (mm) in inter-finger spacing per sample to even consider it a pinch, not scroll jitter.
 PINCH_RATIO = 0.6      # spacing change must be at least this fraction of the pan distance to be classified as pinch/zoom instead of a two-finger pan.
 PINCH_STREAK_MIN = 2   # consecutive pinch-looking samples required before actually suppressing scroll (debounces single-sample noise during fast pans).
 RETOUCH_GRACE_MS = 120.0  # a touch-down within this long after a touch-up is treated as the same gesture continuing (see touch_start), not a fresh one.
 
 # ---- mouse tunables ---------------------------------------------------------
-MOUSE_GAIN = 0.5             # multiplier on raw wheel notch value (120 hi-res units = 1 notch).
+MOUSE_GAIN = 0.45             # multiplier on raw wheel notch value (120 hi-res units = 1 notch).
 MOUSE_NATURAL_SCROLL = False # invert mouse wheel direction independently of the touchpad.
-MOUSE_FRICTION = 0.94        # a bit shorter inertia than the touchpad by default.
-MOUSE_MIN_VELOCITY = 5.0
-MOUSE_RAMP_MS = 260.0        # longer ramp so wheel speed doesn't spike so abruptly on fast spins.
-MOUSE_RAMP_POWER = 1.6        # gentler curve so the very first notch still responds quickly.
+MOUSE_FRICTION = 0.95        # a bit shorter inertia than the touchpad by default.
+MOUSE_MIN_VELOCITY = 4.5
+MOUSE_RAMP_MS = 290.0        # longer ramp so wheel speed doesn't spike so abruptly on fast spins.
+MOUSE_RAMP_POWER = 0.7999999999999997        # gentler curve so the very first notch still responds quickly.
 MOUSE_BURST_RESET_MS = 400.0 # idle gap (ms) between notches that restarts the ramp from zero.
-MOUSE_SMOOTHING = 0.5        # low-pass filter factor while actively spinning the wheel.
+MOUSE_SMOOTHING = 0.61        # low-pass filter factor while actively spinning the wheel.
 MOUSE_AUTO_RELEASE_MS = 180.0 # how long after the last notch before switching to inertia decay.
+MOUSE_RAMP_FLOOR = 0.4        # min fraction of full speed the very first wheel notch of a gesture gets (0-1); without this it's exactly 0, so the first notch of a scroll does nothing.
 
 TICK_HZ = 240.0        # output emission rate; higher = finer, less steppy motion (independent of the touchpad's own polling rate).
 # -----------------------------------------------------------------------------
@@ -85,6 +87,7 @@ class ScrollSmoother:
         smoothing=SMOOTHING,
         burst_reset_ms=250.0,
         auto_release_ms=None,
+        ramp_floor=0.0,
     ):
         self.emit = emit
         self.friction = friction
@@ -94,6 +97,7 @@ class ScrollSmoother:
         self.continuous_input = continuous_input
         self.smoothing = smoothing
         self.burst_reset_ms = burst_reset_ms
+        self.ramp_floor = ramp_floor  # min fraction of full speed on the very first sample of a gesture (see feed())
         self.auto_release_ms = auto_release_ms  # discrete sources (mouse notches): auto-clear `held`
         self.lock = threading.Lock()
         self.velocity = [0.0, 0.0]        # actual output velocity (what tick() emits from)
@@ -153,7 +157,11 @@ class ScrollSmoother:
             dt = max(now - self.last_t, 1e-4) if self.last_t is not None else TICK_DT
             elapsed_ms = (now - self.gesture_start_t) * 1000.0
             progress = min(1.0, elapsed_ms / self.ramp_ms)
-            ramp = progress ** self.ramp_power
+            # On the very first sample of a gesture, elapsed_ms is exactly 0 (gesture_start_t
+            # was just set to `now` above), so progress**power would be exactly 0 - the very
+            # first notch/touch would move nothing at all. ramp_floor guarantees it still
+            # produces real, if reduced, velocity immediately.
+            ramp = max(self.ramp_floor, progress ** self.ramp_power)
             vx = (dx_raw * ramp) / dt
             vy = (dy_raw * ramp) / dt
             self.last_t = now
@@ -238,8 +246,20 @@ def find_touchpad():
 
 
 def find_mouse():
-    for path in list_devices():
-        dev = InputDevice(path)
+    devices = [InputDevice(path) for path in list_devices()]
+
+    # A remapper daemon (e.g. keyd, with `[ids] *`) grabs every physical input
+    # device exclusively and re-emits through its own virtual device -
+    # grabbing the physical mouse ourselves at that point fails with EBUSY
+    # ("Device or resource busy"), silently disabling mouse smoothing
+    # entirely. When one is running, its virtual pointer output is the real
+    # live stream to attach to instead.
+    for dev in devices:
+        name = dev.name.lower()
+        if "keyd" in name and "pointer" in name:
+            return dev
+
+    for dev in devices:
         if "touchpad" in dev.name.lower():
             continue
         caps = dev.capabilities()
@@ -368,9 +388,9 @@ def touchpad_worker(smoother, stop_flag, all_smoothers):
                                 else:
                                     axis_lock = "free"
                             if axis_lock == "y":
-                                dmx_mm = 0.0
+                                dmx_mm *= AXIS_LOCK_SUPPRESS
                             elif axis_lock == "x":
-                                dmy_mm = 0.0
+                                dmy_mm *= AXIS_LOCK_SUPPRESS
                             sign = -1 if NATURAL_SCROLL else 1
                             smoother.feed(sign * dmx_mm * GAIN, sign * dmy_mm * GAIN, now)
                     last_avg = (ax, ay)
@@ -501,6 +521,7 @@ def main():
             smoothing=MOUSE_SMOOTHING,
             burst_reset_ms=MOUSE_BURST_RESET_MS,
             auto_release_ms=MOUSE_AUTO_RELEASE_MS,
+            ramp_floor=MOUSE_RAMP_FLOOR,
         )
         smoothers.append(mouse_smoother)
 

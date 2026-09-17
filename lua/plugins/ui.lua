@@ -11,6 +11,12 @@ local function paper_theme_name()
 end
 local PAPER_THEME = paper_theme_name()
 
+-- Giữ lại 3 keymap cũ của akinsho/bufferline.nvim (đã gỡ - xem comment ở chỗ plugin đó từng
+-- nằm) bằng lệnh gốc của Neovim, không cần plugin nào cả.
+vim.keymap.set("n", "<A-Left>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<A-Right>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+
 return {
   {
     "rebelot/kanagawa.nvim",
@@ -161,6 +167,16 @@ return {
   },
   {
     "nvim-lualine/lualine.nvim",
+    -- Disabled (not deleted - flip back to true, or drop this line, to revert): "bỏ plugin
+    -- statusline, java-project-model tự tạo statusline riêng chỉ nằm dưới cùng của màn hình như
+    -- intellij" (drop the statusline plugin, java-debug-model builds its own status bar, living
+    -- only at the very bottom of the screen, like IntelliJ) - java-debug-model/lua/java-debug-
+    -- model/ui/statusline.lua now owns `&statusline`/`&laststatus` (opts.statusline_enabled)
+    -- instead, and ported over both signals this config's own lualine section fed it: the
+    -- Maven-resolving/jdtls-starting/debug-launching text (java_debug_model_status below,
+    -- ui/statusline.lua's own M.right()) and the running-DAP-sessions + port list (dap_status
+    -- below, same M.right()).
+    enabled = false,
     config = function()
       -- Hiện đang có bao nhiêu debug session chạy + tên (+ port nếu đã bắt được từ log Spring
       -- Boot), để biết ngay tắt xong thật chưa thay vì phải đoán, và khỏi mở console tìm port.
@@ -203,57 +219,11 @@ return {
       })
     end,
   },
-  {
-    "akinsho/bufferline.nvim",
-    version = "*",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      local function url_decode(s)
-        return (s:gsub("%%(%x%x)", function(h) return string.char(tonumber(h, 16)) end))
-      end
-
-      -- File mở từ .class trong jar (gd/references vào lib) có buffer name dạng URI
-      -- "jdt://contents/<jar hoặc project ref>/<package>/<Class>.class?<query>" - đặt tên tab
-      -- MẶC ĐỊNH của bufferline (basename) ra cả URI encode dài dòng, khó đọc (vd
-      -- "%3Cvn.longvan.crm..."). Tự parse ra tên class + tên lib kèm version, giống IntelliJ
-      -- hiện "ClassName (library-1.2.3.jar)" ở tab khi mở file decompile từ dependency.
-      local function jdt_class_tab_name(path)
-        if not path or not path:match("^jdt://") then return nil end
-        local jar, _pkg, classfile = path:match("contents/([^/]+)/([%a%d._%-]+)/([^?]+)")
-        if not classfile then
-          jar, classfile = path:match("contents/([^/]+)/([^?]+)")
-        end
-        if not classfile then return nil end
-        classfile = url_decode(classfile):gsub("%.class$", ""):gsub("%.java$", "")
-        local class_name = classfile:match("([^/]+)$") or classfile
-        if not jar then return class_name end
-        local lib_label = url_decode(jar):gsub("^<", ""):gsub(">$", "")
-        -- Rút gọn dạng "maven:groupId:artifactId:version" -> "artifactId:version"
-        local parts = {}
-        for p in lib_label:gmatch("[^:]+") do table.insert(parts, p) end
-        if #parts >= 2 then
-          lib_label = parts[#parts - 1] .. ":" .. parts[#parts]
-        end
-        return class_name .. "  [" .. lib_label .. "]"
-      end
-
-      require("bufferline").setup({
-        options = {
-          mode = "buffers",
-          numbers = "none",
-          show_buffer_close_icons = true,
-          show_close_icon = true,
-          show_tab_indicators = false,
-          diagnostics = "nvim_lsp",
-          separator_style = "slant",
-          name_formatter = function(buf) return jdt_class_tab_name(buf.path) end,
-        },
-      })
-      vim.keymap.set("n", "<A-Left>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
-      vim.keymap.set("n", "<A-Right>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
-      vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
-    end,
-  },
+  -- akinsho/bufferline.nvim removed - java-debug-model now owns the tabline itself
+  -- (ui/bufferline.lua, opts.bufferline_enabled), including the same "ClassName
+  -- [artifactId:version]" label for a decompiled jdt:// dependency source this plugin's own
+  -- config used to provide. The 3 keymaps below are kept (Neovim's own :bnext/:bprevious/
+  -- :bdelete instead of BufferLineCycle*/bdelete, functionally the same).
   {
     "lewis6991/gitsigns.nvim",
     config = function() require("gitsigns").setup({}) end,

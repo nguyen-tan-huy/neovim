@@ -176,7 +176,8 @@ return {
 
     -- Báo rõ ràng lúc session THỰC SỰ tắt xong (không phải lúc bấm <leader>dx/dX - đó chỉ là
     -- gửi lệnh terminate, còn tắt xong hẳn hay chưa phải đợi debug adapter phản hồi) + refresh
-    -- ngay statusline (mục 🐛 ở lualine) thay vì đợi lualine tự làm mới theo chu kỳ.
+    -- ngay statusline (mục 🐛 - trước ở lualine, giờ ở java-debug-model/ui/statusline.lua's own
+    -- M.right()) thay vì đợi lần redraw kế tiếp mới tự cập nhật.
     local function on_session_ended(session)
       vim.schedule(function()
         if session and session.config then
