@@ -25,7 +25,7 @@ MIN_VELOCITY = 7.0     # hi-res units/sec below which inertia stops.
 NATURAL_SCROLL = True # True: content follows finger direction (macOS/Sway default).
 RAMP_MS = 290.0        # how long (ms) after touch-down before scroll reaches full speed.
 RAMP_POWER = 1.9       # ease-in curve exponent (progress**power => a real parabola, not linear). Higher = slower/gentler start.
-SMOOTHING = 0.29        # low-pass filter factor (0-1) easing output velocity toward input while touching. Lower = smoother but laggier, higher = snappier but choppier.
+SMOOTHING = 0.4        # low-pass filter factor (0-1) easing output velocity toward input while touching. Lower = smoother but laggier, higher = snappier but choppier.
 CURSOR_MOVE_THRESHOLD = 3.0  # raw device units of 1-finger travel per SYN_REPORT before it counts as "moving the cursor" (vs. sensor jitter).
 LIFTOFF_GRACE_MS = 250.0  # right after a two-finger scroll ends, ignore the trailing single-finger drag (one finger often leaves the pad slightly before the other) so it doesn't get mistaken for a deliberate cursor move and cancel the coast.
 AXIS_LOCK_DECIDE_MM = 5.0  # cumulative pan movement (mm) since gesture start before deciding whether to lock the scroll to one axis.
@@ -39,14 +39,14 @@ RETOUCH_GRACE_MS = 120.0  # a touch-down within this long after a touch-up is tr
 # ---- mouse tunables ---------------------------------------------------------
 MOUSE_GAIN = 0.45             # multiplier on raw wheel notch value (120 hi-res units = 1 notch).
 MOUSE_NATURAL_SCROLL = False # invert mouse wheel direction independently of the touchpad.
-MOUSE_FRICTION = 0.95        # a bit shorter inertia than the touchpad by default.
+MOUSE_FRICTION = 0.98        # a bit shorter inertia than the touchpad by default.
 MOUSE_MIN_VELOCITY = 4.5
 MOUSE_RAMP_MS = 290.0        # longer ramp so wheel speed doesn't spike so abruptly on fast spins.
 MOUSE_RAMP_POWER = 0.7999999999999997        # gentler curve so the very first notch still responds quickly.
 MOUSE_BURST_RESET_MS = 400.0 # idle gap (ms) between notches that restarts the ramp from zero.
-MOUSE_SMOOTHING = 0.61        # low-pass filter factor while actively spinning the wheel.
+MOUSE_SMOOTHING = 0.99        # low-pass filter factor while actively spinning the wheel.
 MOUSE_AUTO_RELEASE_MS = 180.0 # how long after the last notch before switching to inertia decay.
-MOUSE_RAMP_FLOOR = 0.4        # min fraction of full speed the very first wheel notch of a gesture gets (0-1); without this it's exactly 0, so the first notch of a scroll does nothing.
+MOUSE_RAMP_FLOOR = 0.45        # min fraction of full speed the very first wheel notch of a gesture gets (0-1); without this it's exactly 0, so the first notch of a scroll does nothing.
 
 TICK_HZ = 240.0        # output emission rate; higher = finer, less steppy motion (independent of the touchpad's own polling rate).
 # -----------------------------------------------------------------------------
