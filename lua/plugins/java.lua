@@ -32,7 +32,9 @@ return {
     -- project ngay khi mở nvim vào đó, và autocmd FileType đã sẵn sàng trước khi buffer .java
     -- đầu tiên mở ra.
     "nguyen-tan-huy/java-project-model",
-    dir = vim.fn.isdirectory(java_debug_model_local_dir) == 1 and java_debug_model_local_dir or nil,
+    -- Trong app ChoDiLamIDE (CHODILAMIDE=1) luôn dùng bản trên GitHub, không dùng checkout local.
+    dir = vim.env.CHODILAMIDE == nil and vim.fn.isdirectory(java_debug_model_local_dir) == 1
+      and java_debug_model_local_dir or nil,
     name = "java-debug-model",
     event = "VeryLazy",
     dependencies = {
