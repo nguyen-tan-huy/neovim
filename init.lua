@@ -62,7 +62,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
       vim.wo.relativenumber = false
       vim.wo.cursorline = false
       vim.wo.signcolumn = "no"
-      if vim.fn.filereadable(path .. "/pom.xml") == 1 then
+      -- pom.xml ở gốc, hoặc chỉ ở module con (vd axigen-service/{axigen-api,axigen-core}, không có pom cha)
+      local is_maven = vim.fn.filereadable(path .. "/pom.xml") == 1
+        or #vim.fs.find("pom.xml", { path = path, type = "file", limit = 1,
+          skip = function(d) return not d:match("^%.") and d ~= "target" and d ~= "node_modules" end }) > 0
+      if is_maven then
         vim.schedule(function()
           pcall(function() require("lazy").load({ plugins = { "java-debug-model" } }) end)
           pcall(vim.cmd, "JavaProjectTree")
