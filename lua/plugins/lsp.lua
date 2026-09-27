@@ -26,7 +26,8 @@ return {
       local ok_registry, registry = pcall(require, "mason-registry")
       if ok_registry then
         local ok_pkg, pkg = pcall(registry.get_package, "codelldb")
-        if ok_pkg and not pkg:is_installed() then
+        -- Headless (myapp sync/doctor): không tự cài nền, nvim thoát sớm sẽ hủy giữa chừng
+        if ok_pkg and not pkg:is_installed() and #vim.api.nvim_list_uis() > 0 then
           vim.notify("Đang cài codelldb qua Mason...", vim.log.levels.INFO)
           pkg:install()
         end
@@ -109,13 +110,14 @@ return {
             return true
           end
 
-          map("n", "<C-b>", function()
-            -- File xhtml (JSF/PrimeFaces): nếu cursor đang đứng trong EL expression
-            -- (#{bean.action}) thì nhảy sang Java backing bean, lemminx không hiểu EL
-            -- nên không tự làm được (xem lua/el_nav.lua).
-            if vim.bo[buf].filetype == "xhtml" and require("el_nav").jump_from_cursor() then
-              return
-            end
+          -- .java và .xhtml: Ctrl+B do java-debug-model tự gắn cho buffer (Java: declaration/
+          -- implementation/usages; xhtml: EL #{a.b.c} -> đúng member Java theo KIỂU qua jdtls,
+          -- include/template, composite tag). KHÔNG map đè ở đây: LspAttach chạy sau và từng ghi
+          -- đè nó - xhtml khi đó rơi về el_nav.lua cũ (grep tên member ngay trong file bean), nên
+          -- #{ComputingBean.computing.name} nhảy nhầm vào dòng GỌI getComputing().getName().
+          local jdm_owned = vim.bo[buf].filetype == "java"
+            or vim.api.nvim_buf_get_name(buf):match("%.xhtml$") ~= nil
+          if not jdm_owned then map("n", "<C-b>", function()
             local params = vim.lsp.util.make_position_params(0, "utf-16")
             vim.lsp.buf_request(buf, "textDocument/definition", params, function(_, result)
               if not result or vim.tbl_isempty(result) then
@@ -146,7 +148,7 @@ return {
                 end
               end)
             end)
-          end, "Go to implementation / usages (Ctrl+B)")
+          end, "Go to implementation / usages (Ctrl+B)") end
           map("n", "K", vim.lsp.buf.hover, "Hover doc")
           map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
           map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")

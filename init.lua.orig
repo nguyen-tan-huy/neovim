@@ -27,49 +27,18 @@ o.timeoutlen = 300
 o.splitright = true
 o.splitbelow = true
 o.scrolloff = 8
-o.cmdheight = 0 -- không chừa dòng lệnh trống dưới cùng (hiện khi gõ :)
 o.clipboard = "unnamedplus"
 o.cursorline = true
 
--- Không dùng netrw: thư mục mở bằng Project Tree của java-debug-model (xem autocmd bên dưới)
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- ===== Auto-root: chỉ đổi cwd ĐÚNG 1 LẦN lúc khởi động, không đổi lại nữa =====
 -- Trước đây tự đổi cwd theo project của TỪNG file khi qua lại (BufEnter) để Telescope tìm đúng
--- phạm vi - nhưng đổi liên tục theo buffer làm project tree/telescope "nhảy" loạn giữa các module
+-- phạm vi - nhưng đổi liên tục theo buffer làm neo-tree/telescope "nhảy" loạn giữa các module
 -- (vd product-web <-> product-core). Giờ chỉ dò root 1 LẦN khi Neovim khởi động, dựa theo file
 -- đầu tiên được mở (nếu có) hoặc :pwd hiện tại, rồi CỐ ĐỊNH - dùng lệnh :cd tay nếu muốn đổi.
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function()
     local path = vim.api.nvim_buf_get_name(0)
-    -- `nvim <thư mục>` (DevTerm mở project): cd vào đó, bỏ buffer thư mục rồi mở Project Tree của
-    -- java-debug-model thay cho netrw (plugin nạp lúc VeryLazy nên nạp trước).
-    if path ~= "" and vim.fn.isdirectory(path) == 1 then
-      vim.fn.chdir(path)
-      local dir_buf = vim.api.nvim_get_current_buf()
-      vim.cmd("enew")
-      pcall(vim.api.nvim_buf_delete, dir_buf, { force = true })
-      -- Vùng editor trống như IntelliJ khi chưa mở file: không tab "[No Name]", không số dòng;
-      -- mở file đầu tiên thì buffer này tự bị xóa.
-      local b = vim.api.nvim_get_current_buf()
-      vim.bo[b].buftype = "nofile"
-      vim.bo[b].bufhidden = "wipe"
-      vim.bo[b].buflisted = false
-      vim.bo[b].swapfile = false
-      vim.wo.number = false
-      vim.wo.relativenumber = false
-      vim.wo.cursorline = false
-      vim.wo.signcolumn = "no"
-      if vim.fn.filereadable(path .. "/pom.xml") == 1 then
-        vim.schedule(function()
-          pcall(function() require("lazy").load({ plugins = { "java-debug-model" } }) end)
-          pcall(vim.cmd, "JavaProjectTree")
-        end)
-      end
-      return
-    end
     if path == "" or vim.bo.buftype ~= "" then return end
     local root_markers = { ".git", "pom.xml", "build.gradle", "build.gradle.kts", "mvnw", "gradlew", "settings.gradle" }
     local found = vim.fs.find(root_markers, { upward = true, path = vim.fs.dirname(path) })[1]
@@ -101,29 +70,7 @@ require("lazy").setup("plugins", {
 local map = vim.keymap.set
 
 -- Project explorer (Alt+1)
--- Neovim mặc định chia lại mọi cửa sổ cho bằng nhau khi mở/đóng split ('equalalways') làm
--- project tree bị giãn loạn - tắt để các split giữ nguyên kích thước.
-vim.o.equalalways = false
-
--- Toggle Project Tree của java-debug-model (Project -> Module -> Source Root -> file, giống
--- Project view của IntelliJ). Đang mở thì đóng, đang đóng thì mở. Không phải project Maven thì báo.
-local function toggle_project_tree()
-  local tree_bufnr = vim.fn.bufnr("java-debug-model://project-tree")
-  local winid = tree_bufnr ~= -1 and vim.fn.bufwinid(tree_bufnr) or -1
-  if winid ~= -1 then
-    vim.api.nvim_win_close(winid, false)
-    return
-  end
-  local ok, jdm = pcall(require, "java-debug-model")
-  local root = ok and jdm.find_root(0)
-  if root and vim.fn.filereadable(root .. "/pom.xml") == 1 then
-    vim.cmd("JavaProjectTree")
-  else
-    vim.notify("Project tree: không tìm thấy project Maven (pom.xml).", vim.log.levels.WARN)
-  end
-end
-map("n", "<A-1>", toggle_project_tree, { desc = "Toggle project tree" })
-map("n", "<leader>v", toggle_project_tree, { desc = "Toggle project tree" })
+map("n", "<A-1>", "<cmd>Neotree toggle<CR>", { desc = "Toggle file explorer" })
 
 -- Navigate Back/Forward (giống Shift+Alt+Left/Right của IntelliJ)
 -- Ctrl-O/Ctrl-I có sẵn trong Neovim (jumplist), chỉ cần gán thêm phím tắt quen tay

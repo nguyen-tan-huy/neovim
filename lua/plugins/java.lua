@@ -41,10 +41,25 @@ return {
       "rcarriga/nvim-dap-ui",
       "nvim-neotest/nvim-nio", -- dap-ui's own hard dependency (require("dapui") errors without it)
       "JavaHello/spring-boot.nvim",
+      "MunifTanjim/nui.nvim", -- toolbar của java-debug-model (trước đi kèm neo-tree)
       "williamboman/mason.nvim", -- bootstrap.lua's ensure_mason_packages/ensure_jdtls_prebuilt fallback need mason-registry
     },
     config = function()
-      require("java-debug-model").setup({ auto_attach = true })
+      require("java-debug-model").setup({
+        auto_attach = true,
+        -- Run/Debug/Restart config đang active bằng ĐÚNG phím IntelliJ (Shift+F10 / Shift+F9 /
+        -- Ctrl+F5), để <leader>jr (chạy main file hiện tại) và <leader>jd (Dependency Tree) ở
+        -- init.lua dùng lại được - trước đây plugin map đè 2 phím đó. Mỗi hành động map 2 mã
+        -- phím vì terminal kiểu xterm gửi Shift+F10 thành <F22>, Shift+F9 -> <F21>, Ctrl+F5 -> <F29>.
+        run_debug_keymaps = {
+          run = { "<S-F10>", "<F22>" },
+          debug = { "<S-F9>", "<F21>" },
+          restart = { "<C-F5>", "<F29>" },
+          restart_debug = "<leader>jD",
+          select = "<leader>jc",
+          select_module = "<leader>jm",
+        },
+      })
     end,
   },
 }
